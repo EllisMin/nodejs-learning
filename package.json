@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-sandox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EllisMin/nodejs-sandbox.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EllisMin/nodejs-sandbox/issues"
+  },
+  "homepage": "https://github.com/EllisMin/nodejs-sandbox#readme"
+}
