@@ -10,9 +10,16 @@ router.get("/add-product", (req, res, next) => {
   // res.sendFile(path.join(rootDir, "views", "add-product.html"));
 
   // Using templating engine
+  // res.render("add-product", {
+  //   pageTitle: "Add Product",
+  //   path: "/admin/add-product"
+  // });
+
+  // For hbs
   res.render("add-product", {
     pageTitle: "Add Product",
-    path: "/admin/add-product"
+    path: "/admin/add-product",
+    layout: false
   });
 });
 

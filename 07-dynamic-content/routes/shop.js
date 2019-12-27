@@ -11,8 +11,17 @@ router.get("/", (req, res, next) => {
   // res.sendFile(path.join(rootDir, "views", "shop.html"));
 
   const products = adminData.products;
-  // Using default engine 'pug' defined in app.js
-  res.render("shop", { prods: products, pageTitle: "Shop", path: "/" }); // 2nd parm passes in data
+  // Using default engine, uses extension defined in app.js
+  // res.render("shop", { prods: products, pageTitle: "Shop", path: "/" }); // 2nd parm passes in data
+
+  // For hbs
+  res.render("shop", {
+    prods: products,
+    pageTitle: "Shop",
+    path: "/",
+    layout: false,
+    hasProducts: products.length > 0
+  }); // 2nd parm passes in data
 });
 
 module.exports = router;
