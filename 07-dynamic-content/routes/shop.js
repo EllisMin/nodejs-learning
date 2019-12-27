@@ -12,7 +12,7 @@ router.get("/", (req, res, next) => {
 
   const products = adminData.products;
   // Using default engine 'pug' defined in app.js
-  res.render("shop", { prods: products, docTitle: "Shop" }); // 2nd parm passes in data
+  res.render("shop", { prods: products, pageTitle: "Shop", path: "/" }); // 2nd parm passes in data
 });
 
 module.exports = router;
