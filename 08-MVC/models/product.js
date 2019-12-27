@@ -16,8 +16,11 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-  constructor(title) {
+  constructor(title, imgUrl, description, price) {
     this.title = title;
+    this.imgUrl = imgUrl;
+    this.description = description;
+    this.price = price;
   }
 
   save() {
@@ -28,8 +31,6 @@ module.exports = class Product {
         console.log(err);
       });
     });
-
-    fs.readFile(p, (err, fileContent) => {});
   }
 
   // static allows to call this function on Product itself

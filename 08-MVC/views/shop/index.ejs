@@ -12,12 +12,12 @@
             <h1 class="product-title"><%= product.title %></h1>
           </header>
           <div class="card-img">
-            <div class="card-img-img"></div>
+            <div class="card-img-img" style="background: url('<%= product.imgUrl %>');"></div>
           </div>
           <div class="card-content">
-            <h2 class="product-price">$5.99</h2>
+            <h2 class="product-price">$<%= product.price %></h2>
             <p class="product-des">
-              A nice pen that will last you for 30 years
+                <%= product.description %>
             </p>
           </div>
           <div class="card-actions">

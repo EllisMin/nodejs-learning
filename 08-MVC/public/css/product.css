@@ -7,12 +7,14 @@
   margin: 1rem 0;
 }
 .form-control label,
-.form-control input {
+.form-control input,
+.form-control textarea {
   display: block;
   padding: 0.3rem;
   width: 100%;
 }
-.form-control input {
+.form-control input,
+.form-control textarea {
   border: 1px solid var(--primary-color);
   border-radius: 1px;
 }
