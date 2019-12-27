@@ -78,8 +78,10 @@ main {
   padding: 1rem 0;
 }
 .card-img-img {
-  background: url("https://images.pexels.com/photos/1025585/pexels-photo-1025585.jpeg?cs=srgb&dl=pexels-1025585.jpg&fm=jpg")
+  background: url("/assets/pen-1.jpg")
     no-repeat center center/cover;
+  /* background: url("https://images.pexels.com/photos/1025585/pexels-photo-1025585.jpeg?cs=srgb&dl=pexels-1025585.jpg&fm=jpg")
+    no-repeat center center/cover; */
   height: 300px;
 }
 .card-content {

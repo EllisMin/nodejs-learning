@@ -1,3 +1,4 @@
+
 const products = [];
 
 module.exports = class Product {
@@ -11,6 +12,6 @@ module.exports = class Product {
 
   // static allows to call this function on Product itself
   static fetchAll() {
-    return this.products;
+    return products;
   }
 };
