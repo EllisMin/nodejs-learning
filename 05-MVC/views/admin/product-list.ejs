@@ -12,7 +12,7 @@
             <h1 class="product-title"><%= product.title %></h1>
           </header>
           <div class="card-img">
-            <div class="card-img-img" style="background: url('<%= product.imgUrl %>');"></div>
+            <div class="card-img-img" style="background-image: url('<%= product.imgUrl %>');"></div>
           </div>
           <div class="card-content">
             <h2 class="product-price">$<%= product.price %></h2>
@@ -21,8 +21,9 @@
             </p>
           </div>
           <div class="card-actions">
-            <form action="/add-to-cart" method="POST">
-              <button class="btn">Add to Cart</button>
+            <a href="/admin/edit-product" class="btn">Edit</a>
+            <form action="/admin/delete-product" method="POST">
+                <a class="btn">Delete</a>
             </form>
           </div>
         </article>

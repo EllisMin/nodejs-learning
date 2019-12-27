@@ -32,6 +32,10 @@ main {
   background: var(--primary-color);
 }
 
+.centered {
+  text-align: center;
+}
+
 .main-header {
   background: var(--primary-color);
   width: 100%;
@@ -97,4 +101,5 @@ main {
 }
 .card-actions {
   align-self: center;
+  display: flex;
 }

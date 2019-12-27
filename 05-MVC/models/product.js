@@ -17,6 +17,7 @@ const getProductsFromFile = cb => {
 
 module.exports = class Product {
   constructor(title, imgUrl, description, price) {
+    this.id = new Date().getTime().toString();
     this.title = title;
     this.imgUrl = imgUrl;
     this.description = description;
@@ -28,7 +29,7 @@ module.exports = class Product {
       // Write the product into file
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err);
+        console.log("ERROR: " + err);
       });
     });
   }
@@ -36,5 +37,12 @@ module.exports = class Product {
   // static allows to call this function on Product itself
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+
+  static findById(id, cb) {
+    getProductsFromFile(products => {
+      const prod = products.find(p => p.id === id);
+      cb(prod);
+    });
   }
 };

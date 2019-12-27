@@ -9,7 +9,7 @@ const errorController = require("./controllers/error");
 
 // Set up ejs
 app.set("view engine", "ejs");
-app.set("views", "08-MVC/views");
+app.set("views", "05-MVC/views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));

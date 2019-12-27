@@ -7,7 +7,6 @@ exports.getAddProduct = (req, res, next) => {
     activeAddProduct: true,
     productCSS: true
   });
-  
 };
 
 exports.postAddProduct = (req, res, next) => {
@@ -17,17 +16,12 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
 
   const product = new Product(title, imgUrl, description, price);
-  console.log("AA");///
-  
-  console.log(product);///
-  
-  
+
   product.save();
   res.redirect("/");
 };
 
 exports.getProducts = (req, res, next) => {
-  
   Product.fetchAll(products => {
     res.render("admin/product-list", {
       prods: products,

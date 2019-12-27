@@ -22,7 +22,7 @@ const app = express();
 // app.set("view engine", "pug"); // looks for 2nd param extensions
 // app.set("view engine", "hbs");
 app.set("view engine", "ejs");
-app.set("views", "07-template-engine/views"); // second param sets directory from root directory
+app.set("views", "04-template-engine/views"); // second param sets directory from root directory
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
