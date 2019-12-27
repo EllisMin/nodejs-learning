@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title #{docTitle}
+        link(rel="stylesheet", href="/css/main.css")
+    body
+        header.main-header
+            nav.main-header-nav
+                ul.main-header-item-list
+                    li.main-header-item
+                        a.active(href="/") Shop
+                    li.main-header-item
+                        a(href="/admin/add-product") Add Product
+        main
+            if prods.length > 0
+                .grid
+                    each product in prods
+                        article.card.product-item
+                            header.card-header
+                                h1.product-title #{product.title}
+                            .card-img
+                                .card-img-img
+                            .card-content
+                                h2.product-price $5.99
+                                p.product-des A nice pen that will last you for 30 years
+                            .card-actions
+                                button.btn Add to Cart
+            else
+                h1 No Products
