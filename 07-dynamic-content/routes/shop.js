@@ -19,8 +19,8 @@ router.get("/", (req, res, next) => {
     prods: products,
     pageTitle: "Shop",
     path: "/",
-    layout: false,
-    hasProducts: products.length > 0
+    hasProducts: products.length > 0,
+    activeShop: true
   }); // 2nd parm passes in data
 });
 
