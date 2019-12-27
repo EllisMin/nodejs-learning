@@ -15,7 +15,7 @@ router.get("/add-product", (req, res, next) => {
   //   path: "/admin/add-product"
   // });
 
-  // For hbs
+  // For hbs & ejs
   res.render("add-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",

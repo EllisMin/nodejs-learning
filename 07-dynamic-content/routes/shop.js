@@ -14,7 +14,7 @@ router.get("/", (req, res, next) => {
   // Using default engine, uses extension defined in app.js
   // res.render("shop", { prods: products, pageTitle: "Shop", path: "/" }); // 2nd parm passes in data
 
-  // For hbs
+  // For hbs & ejs
   res.render("shop", {
     prods: products,
     pageTitle: "Shop",
