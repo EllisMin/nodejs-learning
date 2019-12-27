@@ -1,0 +1,38 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+}
+main {
+  padding: 1.5rem;
+}
+main h1 {
+  margin-bottom: 1rem;
+}
+.main-header {
+  background: coral;
+  width: 100%;
+}
+.main-header-nav {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+.main-header-item-list {
+  list-style: none;
+  display: flex;
+}
+.main-header-item a {
+  margin: 0 1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+.main-header-item a:hover,
+.main-header-item a:active,
+.main-header-item a.active {
+  color: #ebec7c;
+}
