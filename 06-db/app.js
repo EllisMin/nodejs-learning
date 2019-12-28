@@ -10,16 +10,7 @@ const app = express();
 
 // Set up ejs
 app.set("view engine", "ejs");
-app.set("views", "05-MVC/views");
-
-// execute db query
-db.execute("SELECT * FROM products")
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+app.set("views", "06-db/views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
