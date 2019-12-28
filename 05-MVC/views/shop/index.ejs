@@ -12,7 +12,7 @@
             <h1 class="product-title"><%= product.title %></h1>
           </header>
           <div class="card-img">
-            <div class="card-img-img" style="background: url('<%= product.imgUrl %>');"></div>
+            <div class="card-img-img" style="background-image: url('<%= product.imgUrl %>');"></div>
           </div>
           <div class="card-content">
             <h2 class="product-price">$<%= product.price %></h2>
@@ -21,7 +21,8 @@
             </p>
           </div>
           <div class="card-actions">
-            <button class="btn">Add to Cart</button>
+            <!-- Second arg needed b/c this is inside for loop -->
+            <%- include('../includes/add-to-cart.ejs', {product: product}) %>
           </div>
         </article>
         <% } %>
