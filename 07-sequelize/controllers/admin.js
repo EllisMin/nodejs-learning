@@ -13,13 +13,16 @@ exports.postAddProduct = (req, res, next) => {
   const imgUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
-
-  const product = new Product(null, title, imgUrl, description, price);
-
-  product
-    .save()
-    .then(() => {
-      res.redirect("/");
+  // INSERT INTO from input fields in add-product
+  Product.create({
+    title: title,
+    price: price,
+    imgUrl: imgUrl,
+    description: description
+  })
+    .then(result => {
+      // console.log(result);
+      console.log("created a product"); ///
     })
     .catch(err => console.log(err));
 };
@@ -72,11 +75,14 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render("admin/product-list", {
-      prods: products,
-      pageTitle: "Admin Products",
-      path: "/admin/product-list"
-    });
-  });
+  // Find all records (SELECT)
+  Product.findAll()
+    .then(products => {
+      res.render("admin/product-list", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/product-list"
+      });
+    })
+    .catch(err => console.log(err));
 };

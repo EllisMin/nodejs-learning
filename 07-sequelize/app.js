@@ -4,7 +4,7 @@ const path = require("path");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const errorController = require("./controllers/error");
-const db = require("./util/db");
+const sequelize = require("./util/db");
 
 const app = express();
 
@@ -22,4 +22,13 @@ app.use(shopRoutes);
 // Handle 404
 app.use(errorController.getPageNotFound);
 
-app.listen(3000);
+// CREATE TABLE that's stored in SQL server
+sequelize
+  .sync()
+  .then(result => {
+    // console.log(result);
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
