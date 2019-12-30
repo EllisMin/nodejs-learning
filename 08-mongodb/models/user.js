@@ -127,8 +127,6 @@ class User {
 
   getOrders() {
     const db = getDb();
-    console.log();
-
     // retrieve orders that matches user id
     return db
       .collection("orders")
