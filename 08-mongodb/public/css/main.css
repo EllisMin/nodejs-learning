@@ -31,6 +31,7 @@ main {
 .btn:hover {
   color: #fff;
   background: var(--primary-color);
+  outline: none;
 }
 
 .centered {

@@ -25,6 +25,9 @@ class User {
   }
 
   addToCart(product) {
+    if (!this.cart.items || !this.cart) {
+      this.cart = { items: [] };
+    }
     // used to check if product already exists; if yes, updated quantity
     const cartProductIndex = this.cart.items.findIndex(cp => {
       return cp.productId.toString() === product._id.toString();
@@ -41,13 +44,13 @@ class User {
         quantity: newQuantity
       });
     }
-
     const updatedCart = {
       items: updatedCartItems
     };
     const db = getDb();
     // updateOne() returns a promise
     return db.collection("users").updateOne(
+      // selects which one to update
       { _id: new ObjId(this._id) },
       // overwrite with updated cart
       { $set: { cart: updatedCart } }
@@ -56,6 +59,7 @@ class User {
 
   getCart() {
     const db = getDb();
+
     const productIds = this.cart.items.map(item => {
       return item.productId;
     });
@@ -77,6 +81,20 @@ class User {
       .catch(err => {
         console.log(err);
       });
+  }
+
+  removeItemFromCart(prodId) {
+    // filter() returns array that passes condition
+    const updatedCartItems = this.cart.items.filter(item => {
+      return item.productId.toString() !== prodId.toString();
+    });
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: new ObjId(this._id) },
+        { $set: { cart: { items: updatedCartItems } } }
+      );
   }
 
   static getById(userId) {
