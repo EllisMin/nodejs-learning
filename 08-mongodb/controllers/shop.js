@@ -30,7 +30,7 @@ exports.getProduct = (req, res, next) => {
   // productId's from route url; product/:productId
   const prodId = req.params.productId;
   // console.log(req.params);
-  
+
   Product.getById(prodId).then(product => {
     res.render("shop/product-detail", {
       product: product,
@@ -62,39 +62,49 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   // Extract product id from hidden input in includes/add-to-cart.ejs
   const prodId = req.body.productId;
-  let fetchedCart;
-  let newQuantity = 1;
-  req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts({ where: { id: prodId } });
-    })
-    .then(products => {
-      let product;
-      // Check if product exists in cart
-      if (products.length > 0) {
-        product = products[0];
-      }
-
-      // If product exists, increase quantity
-      if (product) {
-        const oldQuantity = product.cartItem.quantity;
-        newQuantity = oldQuantity + 1;
-        return product;
-      }
-      return Product.findByPk(prodId);
-    })
+  Product.getById(prodId)
     .then(product => {
-      // addProduct(): method added by sequelize for many to many relationship
-      return fetchedCart.addProduct(product, {
-        through: { quantity: newQuantity }
-      });
+      return req.user.addToCart(product);
     })
-    .then(() => {
-      res.redirect("/cart");
+    .then(result => {
+      console.log(result);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+    });
+  // let fetchedCart;
+  // let newQuantity = 1;
+  // req.user
+  //   .getCart()
+  //   .then(cart => {
+  //     fetchedCart = cart;
+  //     return cart.getProducts({ where: { id: prodId } });
+  //   })
+  //   .then(products => {
+  //     let product;
+  //     // Check if product exists in cart
+  //     if (products.length > 0) {
+  //       product = products[0];
+  //     }
+
+  //     // If product exists, increase quantity
+  //     if (product) {
+  //       const oldQuantity = product.cartItem.quantity;
+  //       newQuantity = oldQuantity + 1;
+  //       return product;
+  //     }
+  //     return Product.findByPk(prodId);
+  //   })
+  //   .then(product => {
+  //     // addProduct(): method added by sequelize for many to many relationship
+  //     return fetchedCart.addProduct(product, {
+  //       through: { quantity: newQuantity }
+  //     });
+  //   })
+  //   .then(() => {
+  //     res.redirect("/cart");
+  //   })
+  //   .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {

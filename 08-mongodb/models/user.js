@@ -3,9 +3,11 @@ const ObjId = mongodb.ObjectId;
 const getDb = require("../util/db").getDb;
 
 class User {
-  constructor(username, email) {
+  constructor(username, email, cart, id) {
     this.name = username;
     this.email = email;
+    this.cart = cart; // {items: []}
+    this._id = id;
   }
 
   save() {
@@ -21,6 +23,25 @@ class User {
         console.log(err);
       });
   }
+
+  addToCart(product) {
+    // existing product
+    // const cartProduct = this.cart.items.findIndex(cp => {
+    //   return cp._id === product._id;
+    // });
+
+    const updatedCart = {
+      items: [{ productId: new ObjId(product._id), quantity: 1 }]
+    };
+    const db = getDb();
+    // updateOne() returns a promise
+    return db.collection("users").updateOne(
+      { _id: new ObjId(this._id) },
+      // overwrite with updated cart
+      { $set: { cart: updatedCart } }
+    );
+  }
+
   static getById(userId) {
     const db = getDb();
 

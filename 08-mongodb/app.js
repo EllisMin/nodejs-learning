@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   User.getById("5e09e336798a43d47c624059")
     .then(user => {
       // Adding a new field to req obj; to be used elsewhere
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch(err => console.log(err));
