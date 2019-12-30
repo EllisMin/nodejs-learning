@@ -22,7 +22,7 @@ exports.postAddProduct = (req, res, next) => {
   })
     .then(result => {
       // console.log(result);
-      console.log("created a product"); ///
+      console.log("Created a product"); ///
     })
     .catch(err => console.log(err));
 };
@@ -36,17 +36,20 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const prodId = req.params.productId;
-  Product.findById(prodId, product => {
-    if (!product) {
-      return res.redirect("/");
-    }
-    res.render("admin/edit-product", {
-      pageTitle: "Edit Product",
-      path: "/admin/edit-product",
-      editing: editMode,
-      product: product
-    });
-  });
+
+  Product.findByPk(prodId)
+    .then(product => {
+      if (!product) {
+        return res.redirect("/");
+      }
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product
+      });
+    })
+    .catch(err => console.log(err));
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -54,17 +57,23 @@ exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedImgUrl = req.body.imgUrl;
-  const updatedDes = req.body.description;
+  const updatedDesc = req.body.description;
   const updatedPrice = req.body.price;
-  const updatedProduct = new Product(
-    prodId,
-    updatedTitle,
-    updatedImgUrl,
-    updatedDes,
-    updatedPrice
-  );
-  updatedProduct.save();
-  res.redirect("/admin/product-list");
+
+  Product.findByPk(prodId)
+    .then(product => {
+      product.title = updatedTitle;
+      product.imgUrl = updatedImgUrl;
+      product.description = updatedDesc;
+      product.price = updatedPrice;
+      // Saves to db if doesn't exist otherwise updates it
+      return product.save();
+    })
+    .then(result => {
+      console.log("Updated a product"); ///
+      res.redirect("/admin/product-list");
+    })
+    .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
