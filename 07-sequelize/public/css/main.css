@@ -1,6 +1,7 @@
 :root {
   --primary-color: #ff7f50;
   --dark-color: #333;
+  --card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 * {
   padding: 0;
@@ -34,6 +35,10 @@ main {
 
 .centered {
   text-align: center;
+}
+
+.heading-2 {
+  font-size: 2rem;
 }
 /* Detail */
 .detail-container {
@@ -84,7 +89,7 @@ main {
 .card {
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--card-box-shadow);
   width: 30vw;
   overflow: hidden;
   color: var(--dark-color);
@@ -113,4 +118,18 @@ main {
 .card-actions {
   align-self: center;
   display: flex;
+}
+/* Cart */
+
+.cart-item {
+  margin: 1rem auto;
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+  box-shadow: var(--card-box-shadow);
+  overflow: hidden;
+  color: var(--dark-color);
+  width: 50vw;
 }
