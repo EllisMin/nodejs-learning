@@ -30,12 +30,33 @@ app.use(errorController.getPageNotFound);
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product); // Optional but is to make it more clear
 
+// Giving app access to user
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then(user => {
+      // Adding a new field to req obj; stores sequelize obj
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+});
+
 // CREATE TABLE that's stored in SQL server
 sequelize
-  // force overwrites table
-  .sync({ force: true })
+  .sync()
   .then(result => {
+    return User.findByPk(1);
     // console.log(result);
+  })
+  .then(user => {
+    // Creating dummy user
+    if (!user) {
+      return User.create({ name: "Ellis", email: "test@test.test" });
+    }
+    return Promise.resolve(user); // Promise.resolve() is optional
+  })
+  .then(user => {
+    // console.log(user);
     app.listen(3000);
   })
   .catch(err => {
