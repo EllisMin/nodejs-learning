@@ -11,7 +11,7 @@ const mongoConnect = callback => {
   )
     .then(client => {
       _db = client.db();
-      console.log("Connected!");
+      console.log("Connected to database");
       callback();
     })
     .catch(err => {

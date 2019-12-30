@@ -13,18 +13,12 @@ exports.postAddProduct = (req, res, next) => {
   const imgUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
-  // Having relation allows to create new associated obj to User
-  req.user
-    .createProduct({
-      title: title,
-      price: price,
-      imgUrl: imgUrl,
-      description: description
-      // createProduct() adds new id without having to set userId: req.user.id
-    })
+  const product = new Product(title, price, description, imgUrl);
+
+  product
+    .save()
     .then(result => {
-      // console.log(result);
-      console.log("Created a product"); ///
+      console.log("Created a product");
       res.redirect("/admin/product-list");
     })
     .catch(err => console.log(err));
