@@ -10,7 +10,7 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
-const Order = require("./models/order");
+const Order = require("./models/orders");
 const OrderItem = require("./models/order-item");
 
 const app = express();
@@ -55,8 +55,8 @@ Order.belongsToMany(Product, { through: OrderItem });
 
 // CREATE TABLE that's stored in SQL server
 sequelize
-  // .sync({ force: true }) // overwrites the data
-  .sync()
+  .sync({ force: true }) // overwrites the data
+  // .sync()
   .then(result => {
     return User.findByPk(1);
     // console.log(result);
