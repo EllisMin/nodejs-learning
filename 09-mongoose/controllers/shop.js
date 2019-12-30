@@ -1,8 +1,8 @@
 const Product = require("../models/product");
 
 exports.getIndex = (req, res, next) => {
-  // Find all records (SELECT)
-  Product.fetchAll()
+  // Gives us products not cursor; to get cursor, use find().cursor()
+  Product.find()
     .then(products => {
       // console.log(products);///
       res.render("shop/index", {
@@ -15,8 +15,9 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
+      // console.log(products); ///
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "Shop",
@@ -29,9 +30,8 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   // productId's from route url; product/:productId
   const prodId = req.params.productId;
-  // console.log(req.params);
-
-  Product.getById(prodId).then(product => {
+  // findById provided by mongoose which also parse prodId to ObjectId
+  Product.findById(prodId).then(product => {
     res.render("shop/product-detail", {
       product: product,
       pageTitle: product.title,
