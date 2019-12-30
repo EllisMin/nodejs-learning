@@ -18,6 +18,17 @@ app.set("views", "07-sequelize/views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Giving app access to user
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then(user => {
+      // Adding a new field to req obj; stores sequelize obj
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+});
+
 // Handle middlewares
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -29,17 +40,6 @@ app.use(errorController.getPageNotFound);
 // As a result, it creates userId column in product
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product); // Optional but is to make it more clear
-
-// Giving app access to user
-app.use((req, res, next) => {
-  User.findByPk(1)
-    .then(user => {
-      // Adding a new field to req obj; stores sequelize obj
-      req.user = user;
-      next();
-    })
-    .catch(err => console.log(err));
-});
 
 // CREATE TABLE that's stored in SQL server
 sequelize

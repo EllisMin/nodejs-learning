@@ -13,13 +13,15 @@ exports.postAddProduct = (req, res, next) => {
   const imgUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
-  // INSERT INTO from input fields in add-product
-  Product.create({
-    title: title,
-    price: price,
-    imgUrl: imgUrl,
-    description: description
-  })
+  // Having relation allows to create new associated obj to User
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imgUrl: imgUrl,
+      description: description
+      // createProduct() adds new id without having to set userId: req.user.id
+    })
     .then(result => {
       // console.log(result);
       console.log("Created a product"); ///
@@ -38,8 +40,10 @@ exports.getEditProduct = (req, res, next) => {
   }
   const prodId = req.params.productId;
 
-  Product.findByPk(prodId)
-    .then(product => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    .then(products => {
+      const product = products[0];
       if (!product) {
         return res.redirect("/");
       }
@@ -101,7 +105,8 @@ exports.postDeleteProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   // Find all records (SELECT)
-  Product.findAll()
+  req.user
+    .getProducts()
     .then(products => {
       res.render("admin/product-list", {
         prods: products,
