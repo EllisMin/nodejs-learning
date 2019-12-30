@@ -34,9 +34,13 @@ app.use(errorController.getPageNotFound);
 
 // db connection
 mongoose
-  .connect("mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/test", {
-    useNewUrlParser: true
-  })
+  .connect(
+    "mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/test?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
+  )
   .then(result => {
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
