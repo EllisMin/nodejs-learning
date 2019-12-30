@@ -83,8 +83,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    // include fetches products for order
-    .getOrders({ include: ["products"] })
+    .getOrders()
     .then(orders => {
       res.render("shop/orders", {
         path: "/orders",
@@ -96,32 +95,8 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
-  // get all cart items
   req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then(products => {
-      // console.log(products); ///
-      return req.user
-        .createOrder()
-        .then(order => {
-          return order.addProducts(
-            products.map(product => {
-              product.orderItem = { quantity: product.cartItem.quantity };
-              return product;
-            })
-          );
-        })
-        .catch(err => console.log(err));
-    })
-    .then(result => {
-      // delete cart items on checking out
-      return fetchedCart.setProducts(null);
-    })
+    .addOrder()
     .then(result => {
       res.redirect("/orders");
     })

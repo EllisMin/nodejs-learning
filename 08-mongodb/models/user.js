@@ -97,6 +97,45 @@ class User {
       );
   }
 
+  // adds cart to orders & empty cart
+  addOrder() {
+    const db = getDb();
+    return this.getCart()
+      .then(products => {
+        const order = {
+          // needs a snapshot of product, not reference
+          // i.e. when price of product change, it should remain same in orders page
+          items: products,
+          user: {
+            _id: new ObjId(this._id),
+            name: this.name
+          }
+        };
+        return db.collection("orders").insertOne(order);
+      })
+      .then(result => {
+        // clear cart
+        this.cart = { items: [] };
+        return db
+          .collection("users")
+          .updateOne(
+            { _id: new ObjId(this._id) },
+            { $set: { cart: { items: [] } } }
+          );
+      });
+  }
+
+  getOrders() {
+    const db = getDb();
+    console.log();
+
+    // retrieve orders that matches user id
+    return db
+      .collection("orders")
+      .find({ "user._id": new ObjId(this._id) })
+      .toArray();
+  }
+
   static getById(userId) {
     const db = getDb();
     return (
