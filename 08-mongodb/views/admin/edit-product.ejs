@@ -28,7 +28,7 @@
         </div>
         <% if (editing) { %>
             <!-- To be used in post edit; to extract productId -->
-            <input type="hidden" value="<%= product.id %>" name="productId">
+            <input type="hidden" value="<%= product._id %>" name="productId">
         <% } %>
         <button type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
       </form>

@@ -1,4 +1,6 @@
+const mongodb = require("mongodb");
 const Product = require("../models/product");
+const ObjId = mongodb.ObjectId;
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -24,56 +26,56 @@ exports.postAddProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-// exports.getEditProduct = (req, res, next) => {
-//   // Getting query parameter(?edit="true", passed in ejs)
-//   // returned string "true" if exists in url else undefined
-//   const editMode = req.query.edit;
+exports.getEditProduct = (req, res, next) => {
+  // Getting query parameter(?edit="true", passed in ejs)
+  // returned string "true" if exists in url else undefined
+  const editMode = req.query.edit;
 
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
-//   const prodId = req.params.productId;
+  if (!editMode) {
+    return res.redirect("/");
+  }
+  const prodId = req.params.productId;
 
-//   req.user
-//     .getProducts({ where: { id: prodId } })
-//     .then(products => {
-//       const product = products[0];
-//       if (!product) {
-//         return res.redirect("/");
-//       }
-//       res.render("admin/edit-product", {
-//         pageTitle: "Edit Product",
-//         path: "/admin/edit-product",
-//         editing: editMode,
-//         product: product
-//       });
-//     })
-//     .catch(err => console.log(err));
-// };
+  Product.getById(prodId)
+    .then(product => {
+      if (!product) {
+        return res.redirect("/");
+      }
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product
+      });
+    })
+    .catch(err => console.log(err));
+};
 
-// exports.postEditProduct = (req, res, next) => {
-//   // Extract id from hidden input in /admin/edit-products.ejs
-//   const prodId = req.body.productId;
-//   const updatedTitle = req.body.title;
-//   const updatedImgUrl = req.body.imgUrl;
-//   const updatedDesc = req.body.description;
-//   const updatedPrice = req.body.price;
+exports.postEditProduct = (req, res, next) => {
+  // Extract id from hidden input in /admin/edit-products.ejs
+  const prodId = req.body.productId;
+  const updatedTitle = req.body.title;
+  const updatedImgUrl = req.body.imgUrl;
+  const updatedDesc = req.body.description;
+  const updatedPrice = req.body.price;
 
-//   Product.findByPk(prodId)
-//     .then(product => {
-//       product.title = updatedTitle;
-//       product.imgUrl = updatedImgUrl;
-//       product.description = updatedDesc;
-//       product.price = updatedPrice;
-//       // Saves to db if doesn't exist otherwise updates it
-//       return product.save();
-//     })
-//     .then(result => {
-//       console.log("Updated a product"); ///
-//       res.redirect("/admin/product-list");
-//     })
-//     .catch(err => console.log(err));
-// };
+  // Creating product with updated values
+  const product = new Product(
+    updatedTitle,
+    updatedPrice,
+    updatedDesc,
+    updatedImgUrl,
+    // Use mongodb.ObjectId since it's not stored as string
+    new ObjId(prodId)
+  );
+  product
+    .save()
+    .then(result => {
+      console.log("Updated a product");
+      res.redirect("/admin/product-list");
+    })
+    .catch(err => console.log(err));
+};
 
 // exports.postDeleteProduct = (req, res, next) => {
 //   // Use param to extract from url, else use req.body to extract from hidden input's name
@@ -97,16 +99,14 @@ exports.postAddProduct = (req, res, next) => {
 //   //   .catch(err => console.log(err));
 // };
 
-// exports.getProducts = (req, res, next) => {
-//   // Find all records (SELECT)
-//   req.user
-//     .getProducts()
-//     .then(products => {
-//       res.render("admin/product-list", {
-//         prods: products,
-//         pageTitle: "Admin Products",
-//         path: "/admin/product-list"
-//       });
-//     })
-//     .catch(err => console.log(err));
-// };
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll()
+    .then(products => {
+      res.render("admin/product-list", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/product-list"
+      });
+    })
+    .catch(err => console.log(err));
+};
