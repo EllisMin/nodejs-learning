@@ -1,0 +1,135 @@
+:root {
+  --primary-color: #ff7f50;
+  --dark-color: #333;
+  --card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+}
+main {
+  padding: 1.5rem;
+}
+
+.btn {
+  border: 1px var(--primary-color) solid;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--primary-color);
+  margin: 0.5rem 0.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn:active,
+.btn:hover {
+  color: #fff;
+  background: var(--primary-color);
+}
+
+.centered {
+  text-align: center;
+}
+
+.heading-2 {
+  font-size: 2rem;
+}
+/* Detail */
+.detail-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.detail-img-container {
+  height: 21rem;
+}
+.detail-img {
+  height: 100%;
+}
+.main-header {
+  background: var(--primary-color);
+  width: 100%;
+}
+.main-header-nav {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+.main-header-item-list {
+  list-style: none;
+  display: flex;
+}
+.main-header-item a {
+  margin: 0 1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+.main-header-item a:hover,
+.main-header-item a:active,
+.main-header-item a.active {
+  color: #faf27f;
+}
+
+.grid {
+  /* display: gird;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center; */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-around;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--card-box-shadow);
+  width: 30vw;
+  overflow: hidden;
+  color: var(--dark-color);
+  margin-top: 1rem;
+}
+.card-header {
+  text-align: center;
+  padding: 1rem 0;
+}
+.card-img-img {
+  background-color: #333;
+  background: no-repeat center center/cover;
+  /* background: url("https://images.pexels.com/photos/1025585/pexels-photo-1025585.jpeg?cs=srgb&dl=pexels-1025585.jpg&fm=jpg")
+    no-repeat center center/cover; */
+  height: 300px;
+}
+.card-content {
+  text-align: center;
+}
+.card-content * {
+  margin: 1rem 0;
+}
+.card-content p {
+  font-size: 0.9rem;
+}
+.card-actions {
+  align-self: center;
+  display: flex;
+}
+/* Cart */
+
+.cart-item {
+  margin: 1rem auto;
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+  box-shadow: var(--card-box-shadow);
+  overflow: hidden;
+  color: var(--dark-color);
+  width: 50vw;
+}
