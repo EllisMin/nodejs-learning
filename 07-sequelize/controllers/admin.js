@@ -23,6 +23,7 @@ exports.postAddProduct = (req, res, next) => {
     .then(result => {
       // console.log(result);
       console.log("Created a product"); ///
+      res.redirect("/admin/product-list");
     })
     .catch(err => console.log(err));
 };
@@ -79,8 +80,23 @@ exports.postEditProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   // Use param to extract from url, else use req.body to extract from hidden input's name
   const prodId = req.params.productId;
-  Product.removeById(prodId);
-  res.redirect("/admin/product-list");
+  Product.findByPk(prodId)
+    .then(product => {
+      return product.destroy();
+    })
+    .then(result => {
+      console.log("Destroyed product");
+      res.redirect("/admin/product-list");
+    })
+    .catch(err => console.log(err));
+
+  // Alternative:
+  // Product.destroy({ where: { id: prodId } })
+  //   .then(() => {
+  //     console.log("Destroyed product");
+  //     res.redirect("/admin/product-list");
+  //   })
+  //   .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
