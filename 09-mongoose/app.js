@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
-const User = require("./models/user");
+// const User = require("./models/user");
 
 const app = express();
 
@@ -35,7 +35,7 @@ app.use(errorController.getPageNotFound);
 // db connection
 mongoose
   .connect(
-    "mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/test?retryWrites=true&w=majority",
+    "mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/shop?retryWrites=true&w=majority",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true
