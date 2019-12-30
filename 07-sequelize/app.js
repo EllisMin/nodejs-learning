@@ -50,7 +50,8 @@ Product.belongsToMany(Cart, { through: CartItem });
 
 // CREATE TABLE that's stored in SQL server
 sequelize
-  .sync({ force: true })
+  // .sync({ force: true }) // overwrites table
+  .sync()
   .then(result => {
     return User.findByPk(1);
     // console.log(result);
@@ -64,6 +65,9 @@ sequelize
   })
   .then(user => {
     // console.log(user);
+    return user.createCart();
+  })
+  .then(cart => {
     app.listen(3000);
   })
   .catch(err => {
