@@ -21,6 +21,7 @@
             </p>
           </div>
           <div class="card-actions">
+            <a href="/products/<%= product._id %>" class='btn'>Details</a>
             <!-- Second arg needed b/c this is inside for loop -->
             <%- include('../includes/add-to-cart.ejs', {product: product}) %>
           </div>
