@@ -4,6 +4,7 @@ const path = require("path");
 const errorController = require("./controllers/error");
 
 const mongoConnect = require("./util/db").mongoConnect;
+const User = require("./models/user");
 
 const app = express();
 
@@ -18,14 +19,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then(user => {
-  //     // Adding a new field to req obj; stores sequelize obj
-  //     req.user = user;
-  //     next();
-  //   })
-  //   .catch(err => console.log(err));
-  next();
+  User.getById("5e09e1204a819ac8afba47fc")
+    .then(user => {
+      // Adding a new field to req obj; stores sequelize obj
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
 });
 
 // Handle routes
