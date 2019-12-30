@@ -19,9 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.getById("5e09e1204a819ac8afba47fc")
+  User.getById("5e09e336798a43d47c624059")
     .then(user => {
-      // Adding a new field to req obj; stores sequelize obj
+      // Adding a new field to req obj; to be used elsewhere
       req.user = user;
       next();
     })
