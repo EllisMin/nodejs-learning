@@ -8,6 +8,8 @@ const sequelize = require("./util/db");
 // Import models
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 const app = express();
 
@@ -40,10 +42,15 @@ app.use(errorController.getPageNotFound);
 // As a result, it creates userId column in product
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product); // Optional but is to make it more clear
+Cart.belongsTo(User);
+User.hasOne(Cart); // also optional
+// through defines where the connections should be stored
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // CREATE TABLE that's stored in SQL server
 sequelize
-  .sync()
+  .sync({ force: true })
   .then(result => {
     return User.findByPk(1);
     // console.log(result);
