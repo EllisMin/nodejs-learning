@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Order = require("../models/order");
 
 exports.getIndex = (req, res, next) => {
   // Gives us products not cursor; to get cursor, use find().cursor()
@@ -84,8 +85,8 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  // retrieves orders belong to the user
+  Order.find({ "user.userId": req.user._id })
     .then(orders => {
       res.render("shop/orders", {
         path: "/orders",
@@ -98,9 +99,29 @@ exports.getOrders = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
   req.user
-    .addOrder()
+    .populate("cart.items.productId")
+    .execPopulate()
+    .then(user => {
+      const products = user.cart.items.map(i => {
+        // user spread operator to save all product fields.
+        // _doc returns just the data excluding meta data
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      const order = new Order({
+        products: products,
+        user: { name: user.name, userId: user._id }
+      });
+      return order.save();
+    })
     .then(result => {
+      console.log("created order");
+      // clear cart
+      return req.user.clearCart();
+    })
+    .then(() => {
       res.redirect("/orders");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+    });
 };

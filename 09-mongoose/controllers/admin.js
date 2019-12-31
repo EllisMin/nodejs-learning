@@ -72,7 +72,7 @@ exports.postEditProduct = (req, res, next) => {
       product.description = updatedDesc;
       product.price = updatedPrice;
       product.imgUrl = updatedImgUrl;
-
+      
       // save() automatically updates in mongoose with updated fields above
       return product.save();
     })
