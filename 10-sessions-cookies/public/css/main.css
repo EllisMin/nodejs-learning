@@ -15,6 +15,11 @@ main {
   padding: 1.5rem;
 }
 
+a:focus,
+button:focus {
+  outline: none;
+}
+
 .btn {
   border: 1px var(--primary-color) solid;
   padding: 0.7rem 1rem;
@@ -27,13 +32,11 @@ main {
   text-decoration: none;
   display: inline-block;
 }
+
 .btn:active,
 .btn:hover {
   color: #fff;
   background: var(--primary-color);
-  outline: none;
-}
-.btn:focus{
   outline: none;
 }
 
@@ -64,6 +67,8 @@ textarea:focus {
 .detail-img {
   height: 100%;
 }
+
+/* Nav */
 .main-header {
   background: var(--primary-color);
   width: 100%;
@@ -79,16 +84,29 @@ textarea:focus {
 .main-header-item-list {
   list-style: none;
   display: flex;
+  align-items: center;
+  font-size: 1rem;
 }
-.main-header-item a {
+.main-header-item a,
+.main-header-item button {
+  display: inline-block;
   margin: 0 1rem;
+  padding: 0.2rem;
   color: white;
   text-decoration: none;
   font-weight: bold;
+  background: none;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
 }
+
 .main-header-item a:hover,
 .main-header-item a:active,
-.main-header-item a.active {
+.main-header-item a.active,
+.main-header-item button:hover,
+.main-header-item button:active,
+.main-header-item button.active {
   color: #faf27f;
 }
 
@@ -134,8 +152,8 @@ textarea:focus {
   align-self: center;
   display: flex;
 }
-/* Cart */
 
+/* Cart */
 .cart-item {
   margin: 1rem auto;
   list-style: none;
