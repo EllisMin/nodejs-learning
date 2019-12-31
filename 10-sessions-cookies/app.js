@@ -13,6 +13,7 @@ app.set("views", "10-sessions-cookies/views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 // Handle routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 app.use(errorController.getPageNotFound);
 
 // db connection
