@@ -1,11 +1,6 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
-  // route protection
-  if (!req.session.isLoggedIn) {
-    console.log("You don't have permission to view this page");
-    return res.redirect("/login");
-  }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
