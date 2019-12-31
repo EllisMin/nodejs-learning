@@ -45,6 +45,9 @@
           >Login</a
         >
       </li>
+      <li class="main-header-item">
+        <a href="/signup" class="<%= path === '/signup' ? 'active' : ''%>">Signup</a>
+      </li>
       <% } else { %>
       <li class="main-header-item">
         <form action="/logout" method="POST">

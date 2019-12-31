@@ -34,11 +34,11 @@ exports.postLogin = (req, res, next) => {
   User.findById("5e0a965461c8b9f9c6908ced")
     .then(user => {
       req.session.isLoggedIn = true;
-      req.user = user;
+      req.session.user = user;
       // makes sure that session is created before continuing
       req.session.save(err => {
-        console.log(err);
         res.redirect("/");
+        if (err) console.log(err);
       });
     })
     .catch(err => console.log(err));
