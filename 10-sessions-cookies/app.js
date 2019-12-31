@@ -3,10 +3,21 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
+
+// import session, session storage
 const session = require("express-session");
+const MongoDbStore = require("connect-mongodb-session")(session);
+
 const User = require("./models/user");
+const MONGODB_URI =
+  "mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/shop";
 
 const app = express();
+const store = new MongoDbStore({
+  uri: MONGODB_URI,
+  collection: "sessions"
+  //, expires:
+});
 
 // Set up ejs
 app.set("view engine", "ejs");
@@ -25,8 +36,9 @@ app.use(
     // should be a long str value
     secret: "my secret",
     resave: false,
-    saveUninitialized: false
-    // ,cookie: {}
+    saveUninitialized: false,
+    // cookie: {} ,
+    store: store
   })
 );
 
@@ -49,14 +61,11 @@ app.use(errorController.getPageNotFound);
 
 // db connection
 mongoose
-  .connect(
-    "mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/shop?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
-    }
-  )
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+  })
   .then(result => {
     User.findOne().then(user => {
       if (!user) {
