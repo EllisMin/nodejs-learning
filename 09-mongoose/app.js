@@ -9,7 +9,7 @@ const app = express();
 
 // Set up ejs
 app.set("view engine", "ejs");
-app.set("views", "08-mongodb/views");
+app.set("views", "09-mongoose/views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");

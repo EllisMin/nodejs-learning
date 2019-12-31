@@ -104,7 +104,7 @@ exports.getProducts = (req, res, next) => {
     // instead of having just userId. 2nd arg selects fields of USER similar to select()
     // .populate("userId", 'name')
     .then(products => {
-      console.log(products); ///
+      // console.log(products); ///
       res.render("admin/product-list", {
         prods: products,
         pageTitle: "Admin Products",

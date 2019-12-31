@@ -42,8 +42,10 @@ exports.getProduct = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then(products => {
+    .populate("cart.items.productId")
+    .execPopulate() // returns promise
+    .then(user => {
+      const products = user.cart.items;
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
