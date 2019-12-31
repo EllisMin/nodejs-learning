@@ -37,21 +37,10 @@ app.use(
     secret: "my secret",
     resave: false,
     saveUninitialized: false,
-    // cookie: {} ,
     store: store
+    //, cookie: {}
   })
 );
-
-// executed for every incoming request
-app.use((req, res, next) => {
-  User.findById("5e0a965461c8b9f9c6908ced")
-    .then(user => {
-      // Adding a new field to req obj; to be used elsewhere
-      req.user = user;
-      next();
-    })
-    .catch(err => console.log(err));
-});
 
 // Handle routes
 app.use("/admin", adminRoutes);
