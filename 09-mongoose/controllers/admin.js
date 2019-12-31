@@ -98,7 +98,13 @@ exports.postDeleteProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    // target specific fields of PRODUCT. - to denote exclusion
+    .select('title price -_id')
+    // .populate() is mongoose utility fcn to include all of other user's information
+    // instead of having just userId. 2nd arg selects fields of USER similar to select()
+    .populate("userId", 'name')
     .then(products => {
+      console.log(products); ///
       res.render("admin/product-list", {
         prods: products,
         pageTitle: "Admin Products",
