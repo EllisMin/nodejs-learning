@@ -15,12 +15,41 @@ const userSchema = new Schema({
     // items having array of embedded document
     items: [
       {
-        productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true
+        },
         quantity: { type: Number, required: true }
       }
     ]
   }
 });
+
+// Adding method to schema
+userSchema.methods.addToCart = function(product) {
+  // used to check if product already exists; if yes, updated quantity
+  const cartProductIndex = this.cart.items.findIndex(cp => {
+    return cp.productId.toString() === product._id.toString();
+  });
+  let newQuantity = 1;
+  const updatedCartItems = [...this.cart.items];
+  // product already exists
+  if (cartProductIndex >= 0) {
+    newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+    updatedCartItems[cartProductIndex].quantity = newQuantity;
+  } else {
+    updatedCartItems.push({
+      productId: product._id,
+      quantity: newQuantity
+    });
+  }
+  const updatedCart = {
+    items: updatedCartItems
+  };
+  this.cart = updatedCart;
+  return this.save();
+};
 
 module.exports = mongoose.model("User", userSchema);
 

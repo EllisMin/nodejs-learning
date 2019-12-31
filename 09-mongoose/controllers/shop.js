@@ -58,7 +58,7 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   // Extract product id from hidden input in includes/add-to-cart.ejs
   const prodId = req.body.productId;
-  Product.getById(prodId)
+  Product.findById(prodId)
     .then(product => {
       return req.user.addToCart(product);
     })
