@@ -35,7 +35,11 @@ exports.postLogin = (req, res, next) => {
     .then(user => {
       req.session.isLoggedIn = true;
       req.user = user;
-      res.redirect("/");
+      // makes sure that session is created before continuing
+      req.session.save(err => {
+        console.log(err);
+        res.redirect("/");
+      });
     })
     .catch(err => console.log(err));
 };
