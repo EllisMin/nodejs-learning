@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
+const session = require("express-session");
 const User = require("./models/user");
 
 const app = express();
@@ -13,10 +14,21 @@ app.set("views", "10-sessions-cookies/views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-const authRoutes = require('./routes/auth');
+const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
+// config session
+app.use(
+  session({
+    // should be a long str value
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false
+    // ,cookie: {}
+  })
+);
 
 // executed for every incoming request
 app.use((req, res, next) => {
