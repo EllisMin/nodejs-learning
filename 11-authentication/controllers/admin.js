@@ -1,11 +1,16 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
+  // route protection
+  if (!req.session.isLoggedIn) {
+    console.log("You don't have permission to view this page");
+    return res.redirect("/login");
+  }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.session.user // alternative to req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 
@@ -14,7 +19,7 @@ exports.postAddProduct = (req, res, next) => {
   const imgUrl = req.body.imgUrl;
   const description = req.body.description;
   const price = req.body.price;
-  
+
   const product = new Product({
     title: title,
     imgUrl: imgUrl,
