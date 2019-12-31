@@ -39,7 +39,7 @@ exports.getEditProduct = (req, res, next) => {
   }
   const prodId = req.params.productId;
 
-  Product.getById(prodId)
+  Product.findById(prodId)
     .then(product => {
       if (!product) {
         return res.redirect("/");
@@ -63,16 +63,17 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
 
   // Creating product with updated values
-  const product = new Product(
-    updatedTitle,
-    updatedPrice,
-    updatedDesc,
-    updatedImgUrl,
-    prodId,
-    req.user._id
-  );
-  product
-    .save()
+  Product.findById(prodId)
+    .then(product => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDesc;
+      product.price = updatedPrice;
+      product.imgUrl = updatedImgUrl;
+
+      // save() automatically updates in mongoose
+      return product.save();
+    })
     .then(result => {
       console.log("Updated a product");
       res.redirect("/admin/product-list");
@@ -83,7 +84,7 @@ exports.postEditProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   // Use param to extract from url, else use req.body to extract from hidden input's name
   const prodId = req.params.productId;
-  Product.removeById(prodId)
+  Product.findByIdAndRemove(prodId)
     .then(result => {
       console.log("Removed product");
       res.redirect("/admin/product-list");
@@ -94,7 +95,7 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render("admin/product-list", {
         prods: products,
