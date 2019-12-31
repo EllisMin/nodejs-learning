@@ -42,7 +42,7 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {  
+app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
@@ -71,20 +71,6 @@ mongoose
     useFindAndModify: false
   })
   .then(result => {
-    User.findOne().then(user => {
-      if (!user) {
-        // create user
-        const user = new User({
-          name: "Ellis",
-          email: "dummy@test.com",
-          cart: {
-            items: []
-          }
-        });
-        user.save();
-      }
-    });
-
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
       console.log(`Listening on port ${port}...`);
