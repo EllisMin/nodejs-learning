@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // config session
 app.use(
   session({
-    // should be a long str value
+    // should be a long str value in production
     secret: "my secret",
     resave: false,
     saveUninitialized: false,
@@ -41,6 +41,21 @@ app.use(
     //, cookie: {}
   })
 );
+
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  // create user from session
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 
 // Handle routes
 app.use("/admin", adminRoutes);
