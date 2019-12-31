@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const productsSchema = new Schema({
   title: {
-    type: { String, required: true }
+    type: String,
+    required: true
   },
   price: {
     type: Number,
@@ -16,6 +17,12 @@ const productsSchema = new Schema({
   },
   imgUrl: {
     type: String,
+    required: true
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    // Giving the reference to User model
+    ref: 'User',
     required: true
   }
 });

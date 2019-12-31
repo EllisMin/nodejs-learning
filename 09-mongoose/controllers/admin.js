@@ -17,7 +17,9 @@ exports.postAddProduct = (req, res, next) => {
     title: title,
     imgUrl: imgUrl,
     price: price,
-    description: description
+    description: description,
+    // equivalent to user._id; mongoose automatically picks the id form obj
+    userId: req.user
   });
 
   product
@@ -71,7 +73,7 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.imgUrl = updatedImgUrl;
 
-      // save() automatically updates in mongoose
+      // save() automatically updates in mongoose with updated fields above
       return product.save();
     })
     .then(result => {
