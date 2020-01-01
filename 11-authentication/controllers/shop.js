@@ -9,9 +9,7 @@ exports.getIndex = (req, res, next) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Home",
-        path: "/",
-        isAuthenticated: req.session.isLoggedIn,
-        csrfToken: req.csrfToken()
+        path: "/"
       });
     })
     .catch(err => console.log(err));
@@ -115,7 +113,7 @@ exports.postOrder = (req, res, next) => {
       });
       const order = new Order({
         products: products,
-        user: { name: user.name, userId: user._id }
+        user: { email: req.user.email, userId: req.user }
       });
       return order.save();
     })

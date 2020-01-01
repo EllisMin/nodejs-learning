@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
-const csrf = require('csurf');
+const csrf = require("csurf");
 
 // import session, session storage
 const session = require("express-session");
@@ -62,6 +62,13 @@ app.use((req, res, next) => {
     });
 });
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+  // isAuthenticated: req.session.isLoggedIn,
+  // csrfToken: req.csrfToken()
+});
 // Handle routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
