@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
+const csrf = require('csurf');
 
 // import session, session storage
 const session = require("express-session");
@@ -18,6 +19,8 @@ const store = new MongoDbStore({
   collection: "sessions"
   //, expires:
 });
+
+const csrfProtection = csrf();
 
 // Set up ejs
 app.set("view engine", "ejs");
@@ -41,6 +44,8 @@ app.use(
     //, cookie: {}
   })
 );
+
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
