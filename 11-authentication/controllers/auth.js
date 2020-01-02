@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const sgMail = require("@sendgrid/mail");
@@ -112,7 +113,7 @@ exports.postSignup = (req, res, next) => {
           return sgMail.send(msg);
         })
         .then(result => {
-          console.log("email sent");///
+          console.log("Email(signup) sent to " + email); ///
         })
         .catch(err => {
           console.log(err);
@@ -121,4 +122,63 @@ exports.postSignup = (req, res, next) => {
     .catch(err => {
       console.log(err);
     });
+};
+
+// Find password
+exports.getReset = (req, res, next) => {
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render("auth/reset-pwd", {
+    path: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: message
+  });
+};
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect("/reset");
+    }
+    const token = buffer.toString("hex");
+    const email = req.body.email;
+    User.findOne({ email: email })
+      .then(user => {
+        if (!user) {
+          req.flash("error", "No user found with the email");
+          return res.redirect("/reset");
+        }
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 3600000; // valid for 1 hr
+        return user
+          .save()
+          .then(result => {
+            res.redirect("/login");
+            // sending email
+            const msg = {
+              to: email,
+              from: "shop@example.com",
+              subject: "Password reset",
+              html: `<p>You've requested a password reset</p>
+              <p>Click this <a href="http://localhost:3000/reset/${token}">link</a>
+              to set a new password.</p>`
+            };
+            return sgMail.send(msg);
+          })
+          .then(res => {
+            console.log("Email(pwd reset) sent to " + email); ///
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
 };
