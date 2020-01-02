@@ -1,8 +1,10 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
+const sgMail = require("@sendgrid/mail");
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.getLogin = (req, res, next) => {
-  
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -40,7 +42,7 @@ exports.postLogin = (req, res, next) => {
               res.redirect("/");
             });
           }
-          console.log("password doesn't match");
+          req.flash("error", "password doesn't match");
           res.redirect("/login");
         })
         .catch(err => {
@@ -60,9 +62,16 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/signup", {
     path: "/signup",
-    pageTitle: "Signup"
+    pageTitle: "Signup",
+    errorMessage: message
   });
 };
 exports.postSignup = (req, res, next) => {
@@ -76,6 +85,7 @@ exports.postSignup = (req, res, next) => {
     .then(userDoc => {
       // duplicate email exists
       if (userDoc) {
+        req.flash("error", "email already exists");
         return res.redirect("/signup");
       }
       // encrypt with 12 rounds of hashing
@@ -92,6 +102,20 @@ exports.postSignup = (req, res, next) => {
         .then(result => {
           console.log("User created");
           res.redirect("/login");
+          // sending email
+          const msg = {
+            to: email,
+            from: "shop@example.com",
+            subject: "Signup succeeded!",
+            html: "<h1>You successfully signed up!</h1>"
+          };
+          return sgMail.send(msg);
+        })
+        .then(result => {
+          console.log("email sent");///
+        })
+        .catch(err => {
+          console.log(err);
         });
     })
     .catch(err => {
