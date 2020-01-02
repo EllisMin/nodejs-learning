@@ -67,6 +67,10 @@ exports.postEditProduct = (req, res, next) => {
   // Creating product with updated values
   Product.findById(prodId)
     .then(product => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        console.log("Not allowed to edit product"); ///
+        return res.redirect("/");
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
@@ -74,22 +78,24 @@ exports.postEditProduct = (req, res, next) => {
       product.imgUrl = updatedImgUrl;
 
       // save() automatically updates in mongoose with updated fields above
-      return product.save();
+      return product.save().then(result => {
+        console.log("Updated a product");
+        res.redirect("/admin/product-list");
+      });
     })
-    .then(result => {
-      console.log("Updated a product");
-      res.redirect("/admin/product-list");
-    })
+
     .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   // Use param to extract from url, else use req.body to extract from hidden input's name
   const prodId = req.params.productId;
-  Product.findByIdAndRemove(prodId)
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(result => {
-      console.log("Removed product");
-      res.redirect("/admin/product-list");
+      if (result.deletedCount === 1) {
+        console.log("Removed product");
+        res.redirect("/admin/product-list");
+      }
     })
     .catch(err => {
       console.log(err);
@@ -97,7 +103,7 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // target specific fields of PRODUCT. - to denote exclusion
     // .select('title price -_id')
     // .populate() is mongoose utility fcn to include all of other user's information
