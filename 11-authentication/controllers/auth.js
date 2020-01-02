@@ -2,10 +2,18 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
+  
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    isAuthenticated: false
+    // pulling error message
+    errorMessage: message
   });
 };
 
@@ -17,7 +25,7 @@ exports.postLogin = (req, res, next) => {
     .then(user => {
       // email doesn't exist
       if (!user) {
-        console.log("email doesn't exist");
+        req.flash("error", "email doesn't exist");
         return res.redirect("/login");
       }
       bcrypt
@@ -54,8 +62,7 @@ exports.postLogout = (req, res, next) => {
 exports.getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
-    pageTitle: "Signup",
-    isAuthenticated: false
+    pageTitle: "Signup"
   });
 };
 exports.postSignup = (req, res, next) => {

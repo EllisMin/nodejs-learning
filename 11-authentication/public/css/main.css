@@ -55,6 +55,24 @@ textarea:focus {
   border: solid 1px red;
   box-shadow: 0 0 10px #719ecd;
 }
+
+/* user message in login */
+.user-message {
+  margin: auto;
+  width: 22rem;
+  border: 1px solid #5151e1;
+  background: #d0d0f2;
+  padding: 0.5rem;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.user-message--error {
+  border-color: red;
+  background: #f8dcdc;
+  color: red;
+}
+
 /* Detail */
 .detail-container {
   display: flex;

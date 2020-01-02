@@ -4,6 +4,7 @@ const path = require("path");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 // import session, session storage
 const session = require("express-session");
@@ -46,6 +47,7 @@ app.use(
 );
 
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
