@@ -1,5 +1,5 @@
 const express = require("express");
-const { check } = require("express-validator/check");
+const { check, body } = require("express-validator/check");
 const router = express.Router();
 const authController = require("../controllers/auth");
 
@@ -12,16 +12,34 @@ router.get("/signup", authController.getSignup);
 // check() takes the input name field
 router.post(
   "/signup",
-  check("email")
-    .isEmail()
-    .withMessage("Please enter a valid email"),
-  // chaining a custom validator
-  // .custom((value, { req }) => {
-  //   if (value === "test@test.com") {
-  //     throw new Error("This email address is forbidden");
-  //   }
-  //   return true;
-  // }),
+  // Validation checks
+  [
+    check("email")
+      .isEmail()
+      .withMessage("Please enter a valid email"),
+    // chaining a custom validator
+    // .custom((value, { req }) => {
+    //   if (value === "test@test.com") {
+    //     throw new Error("This email address is forbidden");
+    //   }
+    //   return true;
+    // })
+
+    // Checking password in the body of the request
+    body(
+      "password",
+      "Please enter a password with only numbers and alphabet & at least 5 characters."
+    )
+      .isLength({ min: 5 })
+      .isAlphanumeric(),
+    body("confirmPassword").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    })
+  ],
+
   authController.postSignup
 );
 

@@ -44,7 +44,7 @@ exports.postLogin = (req, res, next) => {
               res.redirect("/");
             });
           }
-          req.flash("error", "password doesn't match");
+          req.flash("error", "incorrect password");
           res.redirect("/login");
         })
         .catch(err => {
@@ -82,7 +82,7 @@ exports.postSignup = (req, res, next) => {
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array()); ///
+    // console.log(errors.array()); ///
     // validation failed
     return res.status(422).render("auth/signup", {
       path: "/signup",
@@ -112,12 +112,12 @@ exports.postSignup = (req, res, next) => {
           return user.save();
         })
         .then(result => {
-          console.log("User created");
+          console.log("User created"); ///
           res.redirect("/login");
           // sending email
           const msg = {
             to: email,
-            from: "shop@example.com",
+            from: "shop@ellismin.com",
             subject: "Signup succeeded!",
             html: "<h1>You successfully signed up!</h1>"
           };
@@ -173,7 +173,7 @@ exports.postReset = (req, res, next) => {
             // sending email
             const msg = {
               to: email,
-              from: "shop@example.com",
+              from: "shop@ellismin.com",
               subject: "Password reset",
               html: `<p>You've requested a password reset</p>
               <p>Click this <a href="http://localhost:3000/reset/${token}">link</a>
@@ -252,7 +252,7 @@ exports.postNewPassword = (req, res, next) => {
       // sending email
       const msg = {
         to: resetUser.email,
-        from: "shop@example.com",
+        from: "shop@ellismin.com",
         subject: "Password reset complete",
         html: `<h1>You've set a new password</h1>`
       };
