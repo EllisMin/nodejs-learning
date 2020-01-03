@@ -2,6 +2,7 @@ const express = require("express");
 const { check, body } = require("express-validator/check");
 const router = express.Router();
 const authController = require("../controllers/auth");
+const User = require("../models/user");
 
 router.get("/login", authController.getLogin);
 
@@ -16,14 +17,15 @@ router.post(
   [
     check("email")
       .isEmail()
-      .withMessage("Please enter a valid email"),
-    // chaining a custom validator
-    // .custom((value, { req }) => {
-    //   if (value === "test@test.com") {
-    //     throw new Error("This email address is forbidden");
-    //   }
-    //   return true;
-    // })
+      .withMessage("Please enter a valid email")
+      .custom((value, { req }) => {
+        return User.findOne({ email: value }).then(userDoc => {
+          // duplicate email exists
+          if (userDoc) {
+            return Promise.reject("email already exists");
+          }
+        });
+      }),
 
     // Checking password in the body of the request
     body(

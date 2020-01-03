@@ -79,7 +79,7 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // console.log(errors.array()); ///
@@ -91,44 +91,31 @@ exports.postSignup = (req, res, next) => {
     });
   }
 
-  User.findOne({
-    email: email
-  })
-    .then(userDoc => {
-      // duplicate email exists
-      if (userDoc) {
-        req.flash("error", "email already exists");
-        return res.redirect("/signup");
-      }
-      // encrypt with 12 rounds of hashing
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] }
-          });
-          return user.save();
-        })
-        .then(result => {
-          console.log("User created"); ///
-          res.redirect("/login");
-          // sending email
-          const msg = {
-            to: email,
-            from: "shop@ellismin.com",
-            subject: "Signup succeeded!",
-            html: "<h1>You successfully signed up!</h1>"
-          };
-          return sgMail.send(msg);
-        })
-        .then(result => {
-          console.log("Email(signup) sent to " + email); ///
-        })
-        .catch(err => {
-          console.log(err);
-        });
+  // encrypt with 12 rounds of hashing
+  bcrypt
+    .hash(password, 12)
+    .then(hashedPassword => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] }
+      });
+      return user.save();
+    })
+    .then(result => {
+      console.log("User created"); ///
+      res.redirect("/login");
+      // sending email
+      const msg = {
+        to: email,
+        from: "shop@ellismin.com",
+        subject: "Signup succeeded!",
+        html: "<h1>You successfully signed up!</h1>"
+      };
+      return sgMail.send(msg);
+    })
+    .then(result => {
+      console.log("Email(signup) sent to " + email); ///
     })
     .catch(err => {
       console.log(err);
