@@ -10,16 +10,18 @@ router.post(
   "/login",
   [
     body("email", "Please enter a valid email")
-    .custom((value, { req }) => {
-      return User.findOne({ email: value }).then(userDoc => {
-        if (!userDoc) {
-          return Promise.reject("email doesn't exist");
-        }
-      });
-    }),
+      .normalizeEmail()
+      .custom((value, { req }) => {
+        return User.findOne({ email: value }).then(userDoc => {
+          if (!userDoc) {
+            return Promise.reject("email doesn't exist");
+          }
+        });
+      }),
     body("password", "Please enter a valid password")
       .isLength({ min: 5 })
       .isAlphanumeric()
+      .trim()
   ],
   authController.postLogin
 );
@@ -34,6 +36,7 @@ router.post(
     check("email")
       .isEmail()
       .withMessage("Please enter a valid email")
+      .trim()
       .custom((value, { req }) => {
         return User.findOne({ email: value }).then(userDoc => {
           // duplicate email exists
@@ -41,7 +44,8 @@ router.post(
             return Promise.reject("email already exists");
           }
         });
-      }),
+      })
+      .normalizeEmail(),
 
     // Checking password in the body of the request
     body(
@@ -49,7 +53,8 @@ router.post(
       "Please enter a password with only numbers and alphabet & at least 5 characters."
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
     body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Passwords do not match");
