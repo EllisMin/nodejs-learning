@@ -35,3 +35,7 @@ button:active {
   background: var(--primary-color);
   color: #fff;
 }
+
+.form-control input.invalid {
+  border-color: blue;
+}

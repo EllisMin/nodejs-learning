@@ -88,9 +88,11 @@ exports.getSignup = (req, res, next) => {
       email: "",
       password: "",
       confirmPassword: ""
-    }
+    },
+    validationErrors: []
   });
 };
+
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -107,7 +109,8 @@ exports.postSignup = (req, res, next) => {
         email: email,
         password: password,
         confirmPassword: req.body.confirmPassword
-      }
+      },
+      validationErrors: errors.array()
     });
   }
 
