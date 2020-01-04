@@ -36,6 +36,7 @@ button:active {
   color: #fff;
 }
 
-.form-control input.invalid {
-  border-color: blue;
+.form-control input.invalid,
+.form-control textarea.invalid {
+  border: 2px red dashed;
 }
