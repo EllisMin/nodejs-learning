@@ -20,7 +20,7 @@
   border: 1px solid var(--primary-color);
   border-radius: 1px;
 }
-button {
+.product-form button {
   border: 1px solid var(--primary-color);
   color: var(--primary-color);
   background: #fff;
@@ -30,8 +30,8 @@ button {
   align-self: center;
   width: 200px;
 }
-button:hover,
-button:active {
+.product-form button:hover,
+.product-form button:active {
   background: var(--primary-color);
   color: #fff;
 }

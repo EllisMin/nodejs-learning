@@ -26,10 +26,14 @@ const csrfProtection = csrf();
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     // 1st: error, 2nd: destination
-    cb(null, "images");
+    cb(null, "11-authentication/images");
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "-" + file.originalname);
+    // replace to remove : in file name
+    cb(
+      null,
+      new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname
+    );
   }
 });
 const fileFilter = (req, file, cb) => {
@@ -54,11 +58,11 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-// extract file data
+// extract file data when there's a request with multer
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("img"));
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/11-authentication/images", express.static(path.join(__dirname, "images")));
 
 // config session
 app.use(
@@ -115,8 +119,7 @@ app.use((err, req, res, next) => {
   // res.redirect("/500");
   // Other way of handling
   // res.status(error.httpStatusCode).render(...);
-  console.log(err);
-
+  console.log(err);///
   res.status(500).render("500", {
     pageTitle: "Server Error",
     path: "/500",

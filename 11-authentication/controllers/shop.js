@@ -138,7 +138,7 @@ exports.postOrder = (req, res, next) => {
       return order.save();
     })
     .then(result => {
-      console.log("created order");
+      console.log("Created order");
       // clear cart
       return req.user.clearCart();
     })
@@ -177,7 +177,26 @@ exports.getInvoice = (req, res, next) => {
       res.setHeader("Content-Disposition", "inline; filename=" + invoiceName);
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
-      pdfDoc.text("Hello!");
+
+      // Add content to pdf
+      pdfDoc.fontSize(26).text("Invoice", {
+        underline: true
+      });
+      pdfDoc.fontSize(14).text("------------------------");
+      let totalPrice = 0;
+      order.products.forEach(prod => {
+        totalPrice += prod.quantity * prod.product.price;
+        pdfDoc.text(
+          prod.product.title +
+            " - " +
+            prod.quantity +
+            " x $" +
+            prod.product.price
+        );
+      });
+      pdfDoc.text("---");
+      pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`);
+
       pdfDoc.end();
 
       // Preloading is not optimal for bigger files to read it upon request
