@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const sgMail = require("@sendgrid/mail");
-const { validationResult } = require("express-validator/check");
+const { validationResult } = require("express-validator");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -85,7 +85,11 @@ exports.postLogin = (req, res, next) => {
           res.redirect("/login");
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postLogout = (req, res, next) => {
@@ -164,7 +168,9 @@ exports.postSignup = (req, res, next) => {
       console.log("Email(signup) sent to " + email); ///
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -222,7 +228,9 @@ exports.postReset = (req, res, next) => {
           });
       })
       .catch(err => {
-        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
       });
   });
 };
@@ -254,7 +262,9 @@ exports.getNewPassword = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -292,6 +302,8 @@ exports.postNewPassword = (req, res, next) => {
       return sgMail.send(msg);
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
