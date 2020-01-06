@@ -5,6 +5,7 @@ const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 // import session, session storage
 const session = require("express-session");
@@ -32,6 +33,8 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+// extract file data
+app.use(multer({ dest: "images" }).single("img"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // config session
@@ -77,7 +80,6 @@ app.use((req, res, next) => {
       next(new Error(err));
     });
 });
-
 
 // Handle routes
 app.use("/admin", adminRoutes);
