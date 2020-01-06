@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const PdfDocument = require("pdfkit");
+
 const Product = require("../models/product");
 const Order = require("../models/order");
 
@@ -152,7 +154,6 @@ exports.postOrder = (req, res, next) => {
 
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
-
   Order.findById(orderId)
     .then(order => {
       if (!order) {
@@ -168,19 +169,39 @@ exports.getInvoice = (req, res, next) => {
         "invoices",
         invoiceName
       );
-      fs.readFile(invoicePath, (err, data) => {
-        if (err) {
-          // default error handling
-          next(err);
-        }
-        res.setHeader("Content-Type", "application/pdf");
-        // inline: view on browser; attachment: download
-        res.setHeader(
-          "Content-Disposition",
-          "inline; filename=" + invoiceName
-        );
-        res.send(data);
-      });
+
+      // Create file with PDFKit
+      const pdfDoc = new PdfDocument();
+      res.setHeader("Content-Type", "application/pdf");
+      // inline: view on browser; attachment: download
+      res.setHeader("Content-Disposition", "inline; filename=" + invoiceName);
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+      pdfDoc.text("Hello!");
+      pdfDoc.end();
+
+      // Preloading is not optimal for bigger files to read it upon request
+      // fs.readFile(invoicePath, (err, data) => {
+      //   if (err) {
+      //     // default error handling
+      //     next(err);
+      //   }
+      //   res.setHeader("Content-Type", "application/pdf");
+      //   // inline: view on browser; attachment: download
+      //   res.setHeader(
+      //     "Content-Disposition",
+      //     "inline; filename=" + invoiceName
+      //   );
+      //   res.send(data);
+      // });
+
+      // Streaming the data instead of preloading
+      // const file = fs.createReadStream(invoicePath);
+      // res.setHeader("Content-Type", "application/pdf");
+      // // inline: view on browser; attachment: download
+      // res.setHeader("Content-Disposition", "inline; filename=" + invoiceName);
+      // // forward data to response
+      // file.pipe(res);
     })
     .catch(err => next(err));
 };
