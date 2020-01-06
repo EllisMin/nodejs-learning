@@ -23,6 +23,27 @@ const store = new MongoDbStore({
 });
 
 const csrfProtection = csrf();
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // 1st: error, 2nd: destination
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    // 2nd: whether to store file
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 // Set up ejs
 app.set("view engine", "ejs");
@@ -34,7 +55,7 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 // extract file data
-app.use(multer({ dest: "images" }).single("img"));
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("img"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // config session
