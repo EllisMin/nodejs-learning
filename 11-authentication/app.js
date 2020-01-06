@@ -56,7 +56,9 @@ const authRoutes = require("./routes/auth");
 app.use(bodyParser.urlencoded({ extended: false }));
 // extract file data
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("img"));
+
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // config session
 app.use(
@@ -113,6 +115,8 @@ app.use((err, req, res, next) => {
   // res.redirect("/500");
   // Other way of handling
   // res.status(error.httpStatusCode).render(...);
+  console.log(err);
+
   res.status(500).render("500", {
     pageTitle: "Server Error",
     path: "/500",

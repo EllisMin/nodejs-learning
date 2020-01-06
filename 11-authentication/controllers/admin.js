@@ -15,13 +15,29 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   // const imgUrl = req.body.imgUrl;
-  const imgUrl = req.file;
+  const img = req.file;
   const description = req.body.description;
   const price = req.body.price;
   const errors = validationResult(req);
-  
-  console.log(imgUrl);///
-  
+  if (!img) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      product: {
+        title: title,
+        // imgUrl: imgUrl,
+        price: price,
+        description: description
+      },
+      hasError: true,
+      errorMessage: "Attached file is not valid",
+      validationErrors: []
+    });
+  }
+
+  // console.log(img);///
+
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
@@ -29,7 +45,7 @@ exports.postAddProduct = (req, res, next) => {
       editing: false,
       product: {
         title: title,
-        imgUrl: imgUrl,
+        // imgUrl: imgUrl,
         price: price,
         description: description
       },
@@ -38,6 +54,8 @@ exports.postAddProduct = (req, res, next) => {
       validationErrors: errors.array()
     });
   }
+
+  const imgUrl = img.path;
 
   const product = new Product({
     title: title,
@@ -115,7 +133,8 @@ exports.postEditProduct = (req, res, next) => {
   // Extract id from hidden input in /admin/edit-products.ejs
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
-  const updatedImgUrl = req.body.imgUrl;
+  // const updatedImgUrl = req.body.imgUrl;
+  const img = req.file;
   const updatedDesc = req.body.description;
   const updatedPrice = req.body.price;
 
@@ -128,7 +147,7 @@ exports.postEditProduct = (req, res, next) => {
       editing: true,
       product: {
         title: updatedTitle,
-        imgUrl: updatedImgUrl,
+        // imgUrl: updatedImgUrl,
         price: updatedPrice,
         description: updatedDesc,
         _id: prodId
@@ -150,8 +169,10 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.description = updatedDesc;
       product.price = updatedPrice;
-      product.imgUrl = updatedImgUrl;
-
+      // product.imgUrl = updatedImgUrl;
+      if(img) {
+        product.imgUrl = img.path;
+      }
       // save() automatically updates in mongoose with updated fields above
       return product.save().then(result => {
         console.log("Updated a product");
