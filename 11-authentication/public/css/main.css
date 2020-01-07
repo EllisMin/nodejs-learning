@@ -212,6 +212,7 @@ textarea:focus {
   font-size: 1.5rem;
 }
 
+/* Invoice link */
 a.invoice,
 a.invoice:visited {
   color: #5151e1;
@@ -223,4 +224,23 @@ a.invoice:hover {
 }
 a.invoice:active {
   color: #0000ff;
+}
+
+/* Pagination */
+.pagination {
+  text-align: center;
+  margin-top: 2rem;
+}
+.pagination a {
+  text-decoration: none;
+  color: var(--primary-color);
+  padding: 0.5rem;
+  margin: 0 1rem;
+  border: 1px solid var(--primary-color);
+  /* border-radius: 10px; */
+}
+.pagination a:hover,
+.pagination a:active {
+  background: var(--primary-color);
+  color: #fff;
 }

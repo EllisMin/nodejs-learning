@@ -5,9 +5,18 @@ const PdfDocument = require("pdfkit");
 const Product = require("../models/product");
 const Order = require("../models/order");
 
+const ITEMS_PER_PAGE = 2;
+
 exports.getIndex = (req, res, next) => {
+  // From the href in index
+  const page = req.query.page;
+
   // Gives us products not cursor; to get cursor, use find().cursor()
   Product.find()
+    // skip first x results
+    .skip((page - 1) * ITEMS_PER_PAGE)
+    // limit data amount that we fetch
+    .limit(ITEMS_PER_PAGE)
     .then(products => {
       // console.log(products);///
       res.render("shop/index", {
