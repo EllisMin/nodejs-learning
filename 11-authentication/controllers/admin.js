@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
+const fileHelper = require("../util/file");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -170,7 +171,8 @@ exports.postEditProduct = (req, res, next) => {
       product.description = updatedDesc;
       product.price = updatedPrice;
       // product.imgUrl = updatedImgUrl;
-      if(img) {
+      if (img) {
+        fileHelper.deleteFile(product.imgUrl);
         product.imgUrl = img.path;
       }
       // save() automatically updates in mongoose with updated fields above
@@ -189,7 +191,14 @@ exports.postEditProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   // Use param to extract from url, else use req.body to extract from hidden input's name
   const prodId = req.params.productId;
-  Product.deleteOne({ _id: prodId, userId: req.user._id })
+  Product.findById(prodId)
+    .then(prod => {
+      if (!prod) {
+        return next(new Error("Product not found"));
+      }
+      fileHelper.deleteFile(prod.imgUrl);
+      return Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
     .then(result => {
       if (result.deletedCount === 1) {
         console.log("Removed product");
