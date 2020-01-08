@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+require('dotenv').config();
 
 // import session, session storage
 const session = require("express-session");

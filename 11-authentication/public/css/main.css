@@ -173,7 +173,12 @@ textarea:focus {
 }
 
 /* Cart */
+/* .cart-item-list {
+
+} */
+
 .cart-item {
+  padding: 1rem;
   margin: 1rem auto;
   list-style: none;
   display: flex;
