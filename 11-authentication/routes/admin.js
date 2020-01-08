@@ -51,10 +51,13 @@ router.post(
 );
 
 // // /admin/delete/[id] => POST
-router.post(
-  "/delete-product/:productId",
-  isAuth,
-  adminController.postDeleteProduct
-);
+// router.post(
+//   "/delete-product/:productId",
+//   isAuth,
+//   adminController.postDeleteProduct
+// );
+
+// http method; router.post() is still allowed but delete is more clear
+router.delete("/product/:productId", isAuth, adminController.deleteProduct);
 
 module.exports = router;

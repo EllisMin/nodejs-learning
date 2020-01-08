@@ -188,9 +188,10 @@ exports.postEditProduct = (req, res, next) => {
     });
 };
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.deleteProduct = (req, res, next) => {
   // Use param to extract from url, else use req.body to extract from hidden input's name
   const prodId = req.params.productId;
+
   Product.findById(prodId)
     .then(prod => {
       if (!prod) {
@@ -202,13 +203,12 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(result => {
       if (result.deletedCount === 1) {
         console.log("Removed product");
-        res.redirect("/admin/product-list");
+        // Return json response
+        res.status(200).json({ message: "Success" });
       }
     })
     .catch(err => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
+      res.status(500).json({ message: "Deleting product failed" });
     });
 };
 
