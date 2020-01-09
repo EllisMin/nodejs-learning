@@ -1,8 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const feedRoutes = require("./routes/feed");
+
 
 const app = express();
 
@@ -21,14 +23,25 @@ app.use((req, res, next) => {
   );
 
   // Allows client to set headers with Content-Type
-  res.setHeader("Access-Control-Allow-Headers",
-   "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
 
 app.use("/feed", feedRoutes);
 
-const port = 8080;
-app.listen(port, () => {
-  console.log(`Listening on port ${port}...`);
-});
+// db connection
+mongoose
+  .connect(process.env.MONGODB_URI_MESSAGES, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+  })
+  .then(result => {
+    const port = 8080;
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}...`);
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });
