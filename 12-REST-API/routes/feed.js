@@ -14,12 +14,14 @@ router.post(
   [
     body("title")
       .trim()
-      .isLength({ min: 5 }),
+      .isLength({ min: 7 }),
     body("content")
       .trim()
       .isLength({ min: 5 })
   ],
   feedController.postPost
 );
+
+router.get("/post/:postId", feedController.getPost);
 
 module.exports = router;
