@@ -24,12 +24,19 @@ exports.postPost = (req, res, next) => {
     throw error;
   }
 
+  if (!req.file) {
+    const error = new Error("No image provided");
+    err.statusCode = 422;
+    throw error;
+  }
+
+  const imgUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
   const post = new Post({
     title: title,
     content: content,
-    imgUrl: "12-REST-API/images/pen.jpeg",
+    imgUrl: imgUrl,
     creator: "Ellis"
   });
 
