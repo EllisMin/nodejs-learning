@@ -100,11 +100,10 @@ exports.updatePost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  
+
   // Update in db
   Post.findById(postId)
     .then(post => {
-      
       if (!post) {
         const error = new Error("Could not find the post");
         error.statusCode = 404;
@@ -122,6 +121,31 @@ exports.updatePost = (req, res, next) => {
     .then(result => {
       // Use 201 for adding a new resource
       res.status(200).json({ message: "Post updated", post: result });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.deletePost = (req, res, next) => {
+  const postId = req.params.postId;
+  Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        const error = new Error("Could not find the post");
+        error.statusCode = 404;
+        throw error;
+      }
+      // Check logged in user
+      clearImage(post.imgUrl);
+      return Post.findByIdAndRemove(postId);
+    })
+    .then(result => {
+      console.log(result); ///
+      res.status(200).json({ message: "Removed post" });
     })
     .catch(err => {
       if (!err.statusCode) {
