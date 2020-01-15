@@ -111,11 +111,13 @@ exports.getPost = (req, res, next) => {
 exports.updatePost = (req, res, next) => {
   const postId = req.params.postId;
   const errors = validationResult(req);
+  // Validation
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed, entered data is incorrect");
     error.statusCode = 422;
     throw error;
   }
+
   const title = req.body.title;
   const content = req.body.content;
   let imgUrl = req.body.image;
@@ -131,12 +133,20 @@ exports.updatePost = (req, res, next) => {
   // Update in db
   Post.findById(postId)
     .then(post => {
+      // Post doesn't exist
       if (!post) {
         const error = new Error("Could not find the post");
         error.statusCode = 404;
         // Passed down to catch()
         throw error;
       }
+      // Authorize user
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error("Not authorized");
+        error.statusCode = 403;
+        throw error;
+      }
+
       if (imgUrl !== post.imgUrl) {
         clearImage(post.imgUrl);
       }
@@ -164,6 +174,12 @@ exports.deletePost = (req, res, next) => {
       if (!post) {
         const error = new Error("Could not find the post");
         error.statusCode = 404;
+        throw error;
+      }
+      // Authorize user
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error("Not authorized");
+        error.statusCode = 403;
         throw error;
       }
       // Check logged in user
