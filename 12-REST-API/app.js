@@ -78,9 +78,9 @@ mongoose
     const server = app.listen(port, () => {
       console.log(`Listening on port ${port}...`);
     });
-    
+
     // Create socket io connection
-    const io = require("socket.io")(server);
+    const io = require("./socket").init(server);
 
     // Connection listener with client
     io.on("connection", socket => {
