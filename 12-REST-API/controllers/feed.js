@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const { validationResult } = require("express-validator");
+
+const io = require("../socket");
 const Post = require("../models/post");
 const User = require("../models/user");
 
@@ -60,6 +62,12 @@ exports.postPost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.push(post);
     await user.save();
+
+    // Send message to all connected users
+    io.getIO().emit("post event", {
+      action: "create",
+      post: { ...post._doc, creator: { _id: req.userId, name: user.name } }
+    });
 
     // Create post in db; Status 201 is to tell resource is created, successfully
     res.status(201).json({
