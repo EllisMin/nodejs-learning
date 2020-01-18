@@ -14,6 +14,7 @@ exports.getPosts = async (req, res, next) => {
     const totalItems = await Post.find().countDocuments();
     const posts = await Post.find()
       .populate("creator")
+      .sort({ createdAt: -1 }) // sort by descending order
       .skip((curPage - 1) * perPage)
       .limit(perPage);
 
@@ -126,7 +127,7 @@ exports.updatePost = async (req, res, next) => {
   }
   try {
     // Update in db
-    const post = await Post.findById(postId);
+    const post = await (await Post.findById(postId)).populate("creator");
     // Post doesn't exist
     if (!post) {
       const error = new Error("Could not find the post");
@@ -148,6 +149,10 @@ exports.updatePost = async (req, res, next) => {
     post.imgUrl = imgUrl;
     post.content = content;
     const result = await post.save();
+
+    // Send message to all connected users
+    io.getIO().emit("post event", { action: "update", post: result });
+
     // Use 201 for adding a new resource
     res.status(200).json({ message: "Post updated", post: result });
   } catch (err) {
@@ -169,7 +174,7 @@ exports.deletePost = async (req, res, next) => {
       throw error;
     }
     // Authorize user
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error("Not authorized");
       error.statusCode = 403;
       throw error;
@@ -184,6 +189,9 @@ exports.deletePost = async (req, res, next) => {
     // Remove relation with post
     user.posts.pull(postId);
     await user.save();
+
+    io.getIO().emit("post event", { action: "delete", post: postId });
+
     res.status(200).json({ message: "Removed post" });
   } catch (err) {
     if (!err.statusCode) {
