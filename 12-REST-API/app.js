@@ -75,8 +75,16 @@ mongoose
   })
   .then(result => {
     const port = 8080;
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       console.log(`Listening on port ${port}...`);
+    });
+    
+    // Create socket io connection
+    const io = require("socket.io")(server);
+
+    // Connection listener with client
+    io.on("connection", socket => {
+      console.log("Client connected");
     });
   })
   .catch(err => {
