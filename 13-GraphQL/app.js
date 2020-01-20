@@ -61,7 +61,9 @@ app.use(
   "/graphql",
   graphqlHttp({
     schema: graphqlSchema,
-    rootValue: graphResolver
+    rootValue: graphResolver,
+    // Allows to use graph ql interface on browser ("../graphql")
+    graphiql: true
   })
 );
 
@@ -76,7 +78,7 @@ app.use((error, req, res, next) => {
 
 // db connection
 mongoose
-  .connect(process.env.MONGODB_URI_MESSAGES, {
+  .connect(process.env.MONGODB_URI_MESSAGES_GRAPHQL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
