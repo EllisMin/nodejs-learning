@@ -56,14 +56,26 @@ app.use((req, res, next) => {
   next();
 });
 
-// GraphQL middleware
+// GraphQL middleware config
 app.use(
   "/graphql",
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphResolver,
     // Allows to use graph ql interface on browser ("../graphql")
-    graphiql: true
+    graphiql: true,
+    // Formatting the custom error
+    customFormatErrorFn(err) {
+      if (!err.originalError) {
+        // throw graphql default error
+        return err;
+      }
+      const data = err.originalError.data;
+      const message = err.message || "An error occurred";
+      const code = err.originalError.code || 500;
+      // return custom error
+      return { message: message, status: code, data: data };
+    }
   })
 );
 
