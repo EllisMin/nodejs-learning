@@ -4,9 +4,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const graphqlHttp = require("express-graphql");
 
-const feedRoutes = require("./routes/feed");
-const authRoutes = require("./routes/auth");
+const graphqlSchema = require("./graphql/schema");
+const graphResolver = require("./graphql/resolvers");
 
 const app = express();
 
@@ -55,9 +56,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/feed", feedRoutes);
-app.use("/auth", authRoutes);
+// GraphQL middleware
+app.use(
+  "/graphql",
+  graphqlHttp({
+    schema: graphqlSchema,
+    rootValue: graphResolver
+  })
+);
 
+// Error handling middleware
 app.use((error, req, res, next) => {
   console.log(error); ///
   const status = error.statusCode || 500;
@@ -75,16 +83,8 @@ mongoose
   })
   .then(result => {
     const port = 8080;
-    const server = app.listen(port, () => {
+    app.listen(port, () => {
       console.log(`Listening on port ${port}...`);
-    });
-
-    // Create socket io connection
-    const io = require("./socket").init(server);
-
-    // Connection listener with client
-    io.on("connection", socket => {
-      console.log("Client connected");
     });
   })
   .catch(err => {
