@@ -53,6 +53,12 @@ app.use((req, res, next) => {
 
   // Allows client to set headers with Content-Type
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Handle options request since graphql only accepts get/post requests
+  if (req.method == "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  
   next();
 });
 
