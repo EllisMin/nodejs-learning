@@ -8,6 +8,7 @@ const graphqlHttp = require("express-graphql");
 
 const graphqlSchema = require("./graphql/schema");
 const graphResolver = require("./graphql/resolvers");
+const auth = (require = require("./middleware/auth"));
 
 const app = express();
 
@@ -58,9 +59,11 @@ app.use((req, res, next) => {
   if (req.method == "OPTIONS") {
     return res.sendStatus(200);
   }
-  
+
   next();
 });
+// Auth middleware that runs for every graphql request
+app.use(auth);
 
 // GraphQL middleware config
 app.use(
