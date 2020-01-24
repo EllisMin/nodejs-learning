@@ -8,8 +8,8 @@ const multer = require("multer");
 const graphqlHttp = require("express-graphql");
 
 const graphqlSchema = require("./graphql/schema");
-const graphResolver = require("./graphql/resolvers");
-const auth = (require = require("./middleware/auth"));
+const graphqlResolver = require("./graphql/resolvers");
+const auth = require("./middleware/auth");
 
 const app = express();
 
@@ -57,7 +57,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   // Handle options request since graphql only accepts get/post requests
-  if (req.method == "OPTIONS") {
+  if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
 
@@ -69,6 +69,9 @@ app.use(auth);
 
 // Middleware to handle uploading image
 app.put("/post-image", (req, res, next) => {
+  if (!req.isAuth) {
+    throw new Error("Not authenticated");
+  }
   if (!req.file) {
     return res.status(200).json({ message: "No file provided" });
   }
@@ -79,17 +82,15 @@ app.put("/post-image", (req, res, next) => {
 
   return res
     .status(201)
-    .json({ message: "Filed stored" }, (filePath: req.file.path));
+    .json({ message: "Filed stored", filePath: req.file.path });
 });
-
-
 
 // GraphQL middleware config
 app.use(
   "/graphql",
   graphqlHttp({
     schema: graphqlSchema,
-    rootValue: graphResolver,
+    rootValue: graphqlResolver,
     // Allows to use graph ql interface on browser ("../graphql")
     graphiql: true,
     // Formatting the custom error

@@ -47,14 +47,14 @@ exports.postPost = async (req, res, next) => {
     throw error;
   }
 
-  const imgUrl = req.file.path;
+  const imageUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
 
   const post = new Post({
     title: title,
     content: content,
-    imgUrl: imgUrl,
+    imageUrl: imageUrl,
     creator: req.userId
   });
   try {
@@ -116,18 +116,18 @@ exports.updatePost = async (req, res, next) => {
 
   const title = req.body.title;
   const content = req.body.content;
-  let imgUrl = req.body.image;
+  let imageUrl = req.body.image;
   if (req.file) {
-    imgUrl = req.file.path;
+    imageUrl = req.file.path;
   }
-  if (!imgUrl) {
+  if (!imageUrl) {
     const error = new Error("No file picked");
     error.statusCode = 422;
     throw error;
   }
   try {
     // Update in db
-    const post = await (await Post.findById(postId)).populate("creator");
+    const post = await Post.findById(postId).populate("creator");
     // Post doesn't exist
     if (!post) {
       const error = new Error("Could not find the post");
@@ -136,17 +136,17 @@ exports.updatePost = async (req, res, next) => {
       throw error;
     }
     // Authorize user
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error("Not authorized");
       error.statusCode = 403;
       throw error;
     }
 
-    if (imgUrl !== post.imgUrl) {
-      clearImage(post.imgUrl);
+    if (imageUrl !== post.imageUrl) {
+      clearImage(post.imageUrl);
     }
     post.title = title;
-    post.imgUrl = imgUrl;
+    post.imageUrl = imageUrl;
     post.content = content;
     const result = await post.save();
 
@@ -180,7 +180,7 @@ exports.deletePost = async (req, res, next) => {
       throw error;
     }
     // Check logged in user
-    clearImage(post.imgUrl);
+    clearImage(post.imageUrl);
     await Post.findByIdAndRemove(postId);
 
     // console.log(result); ///
