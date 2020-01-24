@@ -1,5 +1,6 @@
 require("dotenv").config();
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -62,8 +63,26 @@ app.use((req, res, next) => {
 
   next();
 });
+
 // Auth middleware that runs for every graphql request
 app.use(auth);
+
+// Middleware to handle uploading image
+app.put("/post-image", (req, res, next) => {
+  if (!req.file) {
+    return res.status(200).json({ message: "No file provided" });
+  }
+  // Delete old image
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+
+  return res
+    .status(201)
+    .json({ message: "Filed stored" }, (filePath: req.file.path));
+});
+
+
 
 // GraphQL middleware config
 app.use(
@@ -113,3 +132,9 @@ mongoose
   .catch(err => {
     console.log(err);
   });
+
+const clearImage = filePath => {
+  filePath = path.join(__dirname, "../..", filePath);
+  // Delete file
+  fs.unlink(filePath, err => console.log(err));
+};
