@@ -177,5 +177,10 @@ module.exports = {
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString()
     }
+  },
+  updatePost: async function({id, postInput}, req) {
+    offscreenBuffering(!req.isAuth) {
+      const error = new Error("Not authenticated")
+    }
   }
 };
