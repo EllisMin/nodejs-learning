@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const { clearImage } = require("../util/file");
 
 module.exports = {
   // createUser({ userInput }, req){}
@@ -179,25 +180,30 @@ module.exports = {
     };
   },
   updatePost: async function({ id, postInput }, req) {
+    // Check if logged in
     if (!req.isAuth) {
       const error = new Error("Not authenticated");
       error.code = r01;
       throw error;
     }
 
-    // Populate creator to get a full user data(user's name)
-    const post = await await Post.findById(id).populated("creator");
+    // Populate creator to get a full user data
+    const post = await Post.findById(id).populate("creator");
+    // Check if post exists
     if (!post) {
       const error = new Error("No post found!");
       error.code = 404;
       throw error;
     }
-    if (post.creator._id.toString() === req.userId.toString()) {
-      const error = new Error("Not authorized!");
+
+    // Check whether user is the creator
+    if (post.creator._id.toString() !== req.userId.toString()) {
+      const error = new Error("Not authorized");
       error.code = 403;
       throw error;
     }
-    post.title = postInput.title;
+
+    // Validation check
     const errors = [];
     if (
       validator.isEmpty(postInput.title) ||
@@ -217,20 +223,52 @@ module.exports = {
       // Add more error data
       error.data = errors;
       error.code = 422;
-
       throw error;
     }
+
+    // Edit title, content, imageUrl(if changed)
     post.title = postInput.title;
     post.content = postInput.content;
-    if (postInput.imageUrl != "undefined") {
+
+    if (postInput.imageUrl !== "undefined") {
       post.imageUrl = postInput.imageUrl;
-      const updatedPost = await post.save();
-      return {
-        ...updatedPost._doc,
-        _id: updatedPost._id.toString(),
-        createdAt: updatedPost.createdAt.toISOString(),
-        updatedAt: updatedPost.updatedAt.toISOString()
-      };
     }
+    const updatedPost = await post.save();
+    return {
+      ...updatedPost._doc,
+      _id: updatedPost._id.toString(),
+      createdAt: updatedPost.createdAt.toISOString(),
+      updatedAt: updatedPost.updatedAt.toISOString()
+    };
+  },
+
+  deletePost: async function({ id }, req) {
+    // Check if logged in
+    if (!req.isAuth) {
+      const error = new Error("Not authenticated");
+      error.code = r01;
+      throw error;
+    }
+    const post = await Post.findById(id);
+    // Check if post exists
+    if (!post) {
+      const error = new Error("No post found!");
+      error.code = 404;
+      throw error;
+    }
+
+    // Check whether user is the creator
+    if (post.creator.toString() !== req.userId.toString()) {
+      const error = new Error("Not authorized");
+      error.code = 403;
+      throw error;
+    }
+    clearImage(post.imageUrl);
+    await Post.findByIdAndRemove(id);
+    const user = await User.findById(req.userId);
+    // pull id of the post removed
+    user.posts.pull(id);
+    await user.save();
+    return true;
   }
 };
