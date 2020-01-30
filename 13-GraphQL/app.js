@@ -1,9 +1,13 @@
 require("dotenv").config();
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
 const graphqlHttp = require("express-graphql");
 
 const graphqlSchema = require("./graphql/schema");
@@ -33,6 +37,19 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
+// Stream to create a file
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  // a: new data gets appended instead of overwrite
+  { flags: "a" }
+);
+
+app.use(helmet());
+// May be provided by hosting provider
+app.use(compression());
+// Logs Requests
+app.use(morgan("combined", { stream: accessLogStream }));
 
 // app.use(bodyParser.urlencoded()) // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
