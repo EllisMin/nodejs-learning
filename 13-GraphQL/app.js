@@ -1,6 +1,7 @@
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
+const https = require("https");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -16,6 +17,10 @@ const auth = require("./middleware/auth");
 const { clearImage } = require("./util/file");
 
 const app = express();
+
+// Read server private key
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -143,6 +148,12 @@ mongoose
   })
   .then(result => {
     const port = 8080;
+    // Start SSL server with private key & certificate  -- often provided by hosting
+    // https
+    //   .createServer({ key: privateKey, cert: certificate }, app)
+    //   .listen(port, () => {
+    //     console.log(`Listening on port ${port}...`);
+    //   });
     app.listen(port, () => {
       console.log(`Listening on port ${port}...`);
     });

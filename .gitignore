@@ -1,2 +1,4 @@
 access.log
 .env
+server.cert
+server.key
