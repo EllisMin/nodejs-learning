@@ -1,4 +1,6 @@
 const expect = require("chai").expect;
+const jwt = require("jsonwebtoken");
+const sinon = require("sinon"); // to use stub in testing
 const authMiddleware = require("../middleware/is-auth");
 
 // Group Auth middleware tests together
@@ -43,7 +45,20 @@ describe("Auth middleware", function() {
         return "Bearer asdfasdf";
       }
     };
+    // Test by overwriting original function--HOWEVER it replaces verify() GLOBALLY
+    // This will affect other methods that requires verify method
+    // jwt.verify = function() {
+    //   return { userId: "asdfasdf" };
+    // };
+
+    sinon.stub(jwt, "verify");
+    jwt.verify.returns({ userId: "asdf" });
+
     authMiddleware(req, {}, () => {});
     expect(req).to.have.property("userId");
+    expect(req).to.have.property("userId", "asdf");
+    expect(jwt.verify.called).to.be.true;
+    // Restore original function
+    jwt.verify.restore();
   });
 });
