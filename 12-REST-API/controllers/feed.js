@@ -127,7 +127,7 @@ exports.updatePost = async (req, res, next) => {
   }
   try {
     // Update in db
-    const post = await (await Post.findById(postId)).populate("creator");
+    const post = await Post.findById(postId).populate("creator");
     // Post doesn't exist
     if (!post) {
       const error = new Error("Could not find the post");
