@@ -48,17 +48,17 @@ describe("Auth Controller - Login", function() {
       .then(result => {
         // Dummy user
         const user = new User({
+          _id: "5e396f9615f4e09d13540703",
           email: "test@a.com",
           password: "1234",
           name: "testname",
-          posts: [],
-          _id: "5c2f66b979af55031b3412ai"
+          posts: []
         });
         // Save test user
         return user.save();
       })
       .then(() => {
-        const req = { userId: "5c2f66b979af55031b3412ai" };
+        const req = { userId: "5e396f9615f4e09d13540703" };
         const res = {
           statusCode: 500,
           userStatus: null,
