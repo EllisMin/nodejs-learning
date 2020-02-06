@@ -1,4 +1,5 @@
 access.log
 .env
+.env-test
 server.cert
 server.key

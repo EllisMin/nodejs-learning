@@ -1,3 +1,4 @@
+require("dotenv").config();
 const expect = require("chai").expect;
 const sinon = require("sinon");
 const mongoose = require("mongoose");
@@ -35,6 +36,9 @@ describe("Auth Controller - Login", function() {
   // Testing db
   it("should send a response with a valid user status for an existing user", function(done) {
     // db connection-- DO NOT USE Production db
+
+    // console.log(process.env.MONGODB_URI_MESSAGES_TEST); ///
+
     mongoose
       .connect(process.env.MONGODB_URI_MESSAGES_TEST, {
         useNewUrlParser: true,
@@ -42,16 +46,36 @@ describe("Auth Controller - Login", function() {
         useFindAndModify: false
       })
       .then(result => {
+        // Dummy user
         const user = new User({
           email: "test@a.com",
           password: "1234",
           name: "testname",
-          posts: []
+          posts: [],
+          _id: "5c2f66b979af55031b3412ai"
         });
         // Save test user
         return user.save();
       })
-      .then(res => {})
+      .then(() => {
+        const req = { userId: "5c2f66b979af55031b3412ai" };
+        const res = {
+          statusCode: 500,
+          userStatus: null,
+          status: function(code) {
+            this.statusCode = code;
+            return this;
+          },
+          json: function(data) {
+            this.userStatus = data.status;
+          }
+        };
+        AuthController.getUserStatus(req, res, () => {}).then(() => {
+          expect(res.statusCode).to.be.equal(200);
+          expect(res.userStatus).to.be.equal("I am new");
+          done();
+        });
+      })
       .catch(err => {
         console.log(err);
       });
