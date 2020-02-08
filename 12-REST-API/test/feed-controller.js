@@ -34,17 +34,8 @@ describe("Feed Controller", function() {
       });
   });
 
-  // Runs before EVERY test case--may be useful to initialize
-  // beforeEach(function() {})
-  // Runs after EVERY test case
-  // afterEach(function() {})
-
-  // Use function(done) for use of async fun
+  // Testing create post that saves in user
   it("should add created post to posts of creator", function(done) {
-    // Testing User.findOne()
-    sinon.stub(User, "findOne");
-    User.findOne.throws();
-
     // Dummy req
     const req = {
       body: {

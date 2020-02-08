@@ -34,6 +34,7 @@ exports.getPosts = async (req, res, next) => {
 
 exports.postPost = async (req, res, next) => {
   // Error handling
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed, entered data is incorrect");
@@ -65,10 +66,10 @@ exports.postPost = async (req, res, next) => {
     const savedUser = await user.save();
 
     // Send message to all connected users
-    io.getIO().emit("post event", {
-      action: "create",
-      post: { ...post._doc, creator: { _id: req.userId, name: user.name } }
-    });
+    // io.getIO().emit("post event", {
+    //   action: "create",
+    //   post: { ...post._doc, creator: { _id: req.userId, name: user.name } }
+    // });
 
     // Create post in db; Status 201 is to tell resource is created, successfully
     res.status(201).json({
@@ -76,10 +77,11 @@ exports.postPost = async (req, res, next) => {
       post: post,
       creator: { _id: user._id, name: user.name }
     });
+    // Returns for testing
     return savedUser;
   } catch (err) {
     if (!err.statusCode) {
-      error.statusCode = 500;
+      err.statusCode = 500;
     }
     next(err);
   }
