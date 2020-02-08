@@ -5,9 +5,9 @@ const mongoose = require("mongoose");
 
 const User = require("../models/user");
 
-const AuthController = require("../controllers/auth");
+const FeedController = require("../controllers/feed");
 
-describe("Auth Controller - Login", function() {
+describe("Feed Controller", function() {
   // Runs before all test cases
   before(function(done) {
     // db connection-- DO NOT USE Production db
@@ -33,14 +33,14 @@ describe("Auth Controller - Login", function() {
         done();
       });
   });
-  
+
   // Runs before EVERY test case--may be useful to initialize
   // beforeEach(function() {})
   // Runs after EVERY test case
   // afterEach(function() {})
 
   // Use function(done) for use of async fun
-  it("should throw an error with status code 500 when fails to access db", function(done) {
+  it("should add created post to posts of creator", function(done) {
     // Testing User.findOne()
     sinon.stub(User, "findOne");
     User.findOne.throws();
@@ -48,40 +48,25 @@ describe("Auth Controller - Login", function() {
     // Dummy req
     const req = {
       body: {
-        email: "test@a.com",
-        password: "123456"
-      }
+        title: "dummy title",
+        content: "dummy content"
+      },
+      file: {
+        path: "dummy path"
+      },
+      userId: "5e396f9615f4e09d13540703"
     };
-    // Testing async login function
-    AuthController.login(req, {}, () => {}).then(result => {
-      //   console.log(result); ///
-      expect(result).to.be.an("error");
-      // statusCode = 500
-      expect(result).to.have.property("statusCode", 500);
-      // Wait for above function to be done login() is async
-      done();
-    });
 
-    User.findOne.restore();
-  });
-
-  // Testing db-- alternative to using stub
-  it("should send a response with a valid user status for an existing user", function(done) {
-    const req = { userId: "5e396f9615f4e09d13540703" };
     const res = {
-      statusCode: 500,
-      userStatus: null,
-      status: function(code) {
-        this.statusCode = code;
+      status: function() {
         return this;
       },
-      json: function(data) {
-        this.userStatus = data.status;
-      }
+      json: function() {}
     };
-    AuthController.getUserStatus(req, res, () => {}).then(() => {
-      expect(res.statusCode).to.be.equal(200);
-      expect(res.userStatus).to.be.equal("I am new");
+    // Testing async login function
+    FeedController.postPost(req, res, () => {}).then(savedUser => {
+      expect(savedUser).to.have.property("posts");
+      expect(savedUser.posts).to.have.length(1);
       done();
     });
   });

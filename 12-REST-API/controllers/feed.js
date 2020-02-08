@@ -62,7 +62,7 @@ exports.postPost = async (req, res, next) => {
     // console.log(result); ///
     const user = await User.findById(req.userId);
     user.posts.push(post);
-    await user.save();
+    const savedUser = await user.save();
 
     // Send message to all connected users
     io.getIO().emit("post event", {
@@ -76,6 +76,7 @@ exports.postPost = async (req, res, next) => {
       post: post,
       creator: { _id: user._id, name: user.name }
     });
+    return savedUser;
   } catch (err) {
     if (!err.statusCode) {
       error.statusCode = 500;
