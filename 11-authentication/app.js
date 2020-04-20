@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
-require('dotenv').config();
+require("dotenv").config();
+const helmet = require("helmet");
 
 // import session, session storage
 const session = require("express-session");
@@ -17,6 +18,7 @@ const MONGODB_URI =
   "mongodb+srv://Ellis:00000000@cluster0-6s9e0.mongodb.net/shop";
 
 const app = express();
+app.use(helmet());
 const store = new MongoDbStore({
   uri: MONGODB_URI,
   collection: "sessions"
@@ -63,7 +65,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("img"));
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/11-authentication/images", express.static(path.join(__dirname, "images")));
+app.use(
+  "/11-authentication/images",
+  express.static(path.join(__dirname, "images"))
+);
 
 // config session
 app.use(
@@ -120,7 +125,7 @@ app.use((err, req, res, next) => {
   // res.redirect("/500");
   // Other way of handling
   // res.status(error.httpStatusCode).render(...);
-  console.log(err);///
+  console.log(err); ///
   res.status(500).render("500", {
     pageTitle: "Server Error",
     path: "/500",
